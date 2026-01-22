@@ -279,10 +279,13 @@
             color: var(--text-sub);
             margin-bottom: 6px;
             font-weight: 500;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         .form-input,
         .form-select {
             width: 100%;
+            min-width: 0;
             padding: 10px 12px;
             background: var(--bg-surface0);
             border: 1px solid var(--border);
@@ -394,6 +397,46 @@
         }
         .ar-fixed-item .form-label i {
             font-size: 10px;
+        }
+        .ar-select-wrapper {
+            position: relative;
+        }
+        .ar-select-wrapper input {
+            cursor: pointer;
+            width: 100%;
+            min-width: 0;
+        }
+        .ar-select-dropdown {
+            position: fixed;
+            max-height: 180px;
+            overflow-y: auto;
+            background: var(--bg-mantle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .ar-select-dropdown::-webkit-scrollbar {
+            width: 4px;
+        }
+        .ar-select-dropdown::-webkit-scrollbar-thumb {
+            background: var(--bg-surface2);
+            border-radius: 2px;
+        }
+        .ar-select-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ar-select-option:hover {
+            background: var(--bg-surface1);
+        }
+        .ar-select-option.selected {
+            background: var(--accent);
+            color: var(--bg-mantle);
         }
         .ar-btn {
             width: 24px;
@@ -853,6 +896,31 @@
         .section-pad-top {
             padding-top: 12px;
         }
+        #item-settings {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 0;
+        }
+        #item-settings .section {
+            flex-shrink: 0;
+        }
+        #item-settings .section-stretch {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #item-settings .ar-fixed-section {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        #item-settings .ar-fixed-item {
+            flex-shrink: 0;
+        }
         .ar-actions {
             display: flex;
             gap: 4px;
@@ -863,6 +931,63 @@
         }
         .modal-margin-top {
             margin-top: 12px;
+        }
+        .modal-bulk-preview {
+            margin-top: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-surface0);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .modal-bulk-preview::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-bulk-preview::-webkit-scrollbar-thumb {
+            background: var(--bg-surface2);
+            border-radius: 2px;
+        }
+        .bulk-preview-header {
+            padding: 10px 12px;
+            background: var(--bg-mantle);
+            border-bottom: 1px solid var(--border);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: sticky;
+            top: 0;
+        }
+        .bulk-preview-item {
+            display: flex;
+            flex-direction: column;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .bulk-preview-item:last-child {
+            border-bottom: none;
+        }
+        .bulk-preview-old {
+            font-size: 12px;
+            color: var(--accent-red);
+            text-decoration: line-through;
+            margin-bottom: 4px;
+        }
+        .bulk-preview-new {
+            font-size: 12px;
+            color: var(--accent-green);
+        }
+        .bulk-preview-count {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .bulk-preview-empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
         }
         .rc-margin-top {
             margin-top: 10px;
@@ -956,6 +1081,19 @@
             }
             .center-panel .panel-content {
                 flex: 1 1 auto;
+                overflow: visible;
+                min-height: 0;
+            }
+            .center-panel #item-settings {
+                overflow: visible;
+            }
+            .center-panel #item-settings .section-stretch {
+                overflow: visible;
+                flex: 0 0 auto;
+                min-height: auto;
+            }
+            .center-panel #item-settings .ar-fixed-section {
+                max-height: none;
                 overflow: visible;
             }
             .left-panel {
@@ -1590,6 +1728,148 @@ https://plrk.co/p/ea_redeem`,
             });
         };
 
+        const showBulkEditModal = () => {
+            const overlay = createModal({
+                html: `
+                <div class="modal">
+                    <div class="modal-header"><i class="fas fa-edit"></i> Bulk Edit</div>
+                    <div class="modal-body">
+                        <label class="form-label">Найти</label>
+                        <input type="text" class="form-input" id="bulk-find" placeholder="Подстрока для поиска...">
+                        <label class="form-label modal-margin-top">Заменить на</label>
+                        <input type="text" class="form-input" id="bulk-replace" placeholder="Текст для замены...">
+                        <div class="modal-bulk-preview" id="bulk-preview">
+                            <div class="bulk-preview-empty">Начните вводить для предпросмотра</div>
+                        </div>
+                        <div class="bulk-preview-count" id="bulk-count"></div>
+                        <div class="modal-error" id="modal-bulk-error"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-sm" id="modal-bulk-cancel">Отмена</button>
+                        <button class="btn btn-success btn-sm" id="modal-bulk-apply" disabled><i class="fas fa-check"></i> Применить</button>
+                    </div>
+                </div>`,
+            });
+
+            const findInput = document.getElementById("bulk-find");
+            const replaceInput = document.getElementById("bulk-replace");
+            const previewContainer = document.getElementById("bulk-preview");
+            const countDiv = document.getElementById("bulk-count");
+            const errorDiv = document.getElementById("modal-bulk-error");
+            const applyBtn = document.getElementById("modal-bulk-apply");
+
+            const updatePreview = () => {
+                const findText = findInput.value;
+                const replaceText = replaceInput.value;
+
+                if (!findText) {
+                    previewContainer.innerHTML =
+                        '<div class="bulk-preview-empty">Введите текст для поиска</div>';
+                    countDiv.textContent = "";
+                    applyBtn.disabled = true;
+                    return;
+                }
+
+                const affectedItems = itemsData.filter((item) =>
+                    item[1].toLowerCase().includes(findText.toLowerCase()),
+                );
+
+                if (affectedItems.length === 0) {
+                    previewContainer.innerHTML =
+                        '<div class="bulk-preview-empty">Совпадений не найдено</div>';
+                    countDiv.textContent = "";
+                    applyBtn.disabled = true;
+                    return;
+                }
+
+                previewContainer.innerHTML = `
+                    <div class="bulk-preview-header">Предпросмотр (${affectedItems.length} товаров)</div>
+                    ${affectedItems
+                        .slice(0, 50)
+                        .map((item) => {
+                            const oldName = item[1];
+                            const newName = oldName
+                                .split(
+                                    new RegExp(
+                                        `(${findText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+                                        "gi",
+                                    ),
+                                )
+                                .map((part, i) =>
+                                    i % 2 === 1
+                                        ? `<span style="background: rgba(166, 227, 161, 0.3);">${part}</span>`
+                                        : part,
+                                )
+                                .join("");
+                            const replacedName = oldName
+                                .split(findText)
+                                .join(replaceText);
+                            return `
+                        <div class="bulk-preview-item">
+                            <div class="bulk-preview-old">${oldName}</div>
+                            <div class="bulk-preview-new">${replacedName}</div>
+                        </div>`;
+                        })
+                        .join("")}
+                    ${affectedItems.length > 50 ? `<div class="bulk-preview-empty">... и ещё ${affectedItems.length - 50}</div>` : ""}
+                `;
+
+                countDiv.textContent = `Будет изменено: ${affectedItems.length} товаров`;
+                applyBtn.disabled = false;
+            };
+
+            findInput.addEventListener("input", updatePreview);
+            replaceInput.addEventListener("input", updatePreview);
+
+            setTimeout(() => findInput.focus(), 100);
+
+            document
+                .getElementById("modal-bulk-cancel")
+                .addEventListener("click", () => overlay.remove());
+
+            document
+                .getElementById("modal-bulk-apply")
+                .addEventListener("click", () => {
+                    const findText = findInput.value;
+                    const replaceText = replaceInput.value;
+
+                    if (!findText) {
+                        errorDiv.textContent = "Введите текст для поиска";
+                        return;
+                    }
+
+                    let count = 0;
+                    itemsData.forEach((item) => {
+                        if (
+                            item[1]
+                                .toLowerCase()
+                                .includes(findText.toLowerCase())
+                        ) {
+                            item[1] = item[1].split(findText).join(replaceText);
+                            count++;
+                        }
+                    });
+
+                    overlay.remove();
+                    renderAll();
+                    if (selectedItemIndex !== -1) renderItemSettings();
+                    showNotification(
+                        `Переименовано: ${count} товаров`,
+                        "success",
+                    );
+                });
+
+            findInput.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") overlay.remove();
+                if (e.key === "Enter" && !applyBtn.disabled)
+                    document.getElementById("modal-bulk-apply").click();
+            });
+
+            overlay.addEventListener("click", (e) => {
+                if (e.target === overlay) overlay.remove();
+            });
+        };
+
         const showInfoModal = () => {
             const overlay = createModal({
                 html: `
@@ -1656,15 +1936,18 @@ https://plrk.co/p/ea_redeem`,
                 brotli = await import(
                     "https://unpkg.com/brotli-wasm@3.0.0/index.web.js?module"
                 ).then((m) => m.default);
-                // const testParams =
-                // "items=G0gFACySt0F46sSMw4vmRP%2F094z0BvLGo8ZD%2BxSmiQaR7iFKh8uEV6fv9xAmHdAZsDY3zOvfHeiLj49gBFK0DC0twX%2F%2Fl5L%2B8%2Fhua8SzPV1bGTAJUIpF538vPUwsgHeAIS5a%2Fu9Yg7ppjElLqK%2FUVyvYWiA1LVWkKuA53gg6oeHSclZTxzH0E1Br55G3Fp9LEf8%2F49cqLloE3iS15pAsMEWGzxxLRDM5hBCrnZ%2FbQYtkezasQpBpuz4hl3YPWd1HTnoIbpjI2%2FT9eo4qsO6Qv5QzPXE93ebNKBhJCxHguNQpBh05K%2Fhg16IBXWlYwoMPv6ofod%2B1zFcmNk7AdEAkWU4QCvqhwdB%2FD%2FKO2qHkrJ%2FYHYbnb7sQGyrNIWhvCp7gEjgzCiWh07GytUQacY%2BwEbOMBN1c66WJxUVVf09tJ%2FYzkTyxbi3oqy46i7325%2F%2Bt89fSCdhRB0HAU5o8j3uh5Q3htyJagn1w0FyUy3IiwePtOijPpcA3OzIjPN7K5TARtuK1yK6PZl90J4RkmoCX5Vu9y4hZphxVZUolp%2F6GRDfYCc6ggzLEOws4N%2BCFbKwkYo7j053tlgPGEiOkZeJY9YeWFwjwxPZ35j6ugySVLyDU%2FvLaENCENLlCzuArr8Is%2FWNYAxCfXVWteD4ARwM6b%2FSjrVre1ph15PkwDI5Or2%2BzDC2X7d3DYikZOQUlFTUNLR3ZMZsNfGRBTHPPZbRVoRUoy4t81D9Byvj7ubkfR3t1DA4%3D";
-                const data = JSON.parse(
-                    decodeParams(
-                        new URLSearchParams(window.location.search).get(
-                            "items",
-                        ),
-                    ),
+
+                let dataParam = new URLSearchParams(window.location.search).get(
+                    "items",
                 );
+
+                if (!dataParam) {
+                    const testParams =
+                        "items=G0gFACySt0F46sSMw4vmRP%2F094z0BvLGo8ZD%2BxSmiQaR7iFKh8uEV6fv9xAmHdAZsDY3zOvfHeiLj49gBFK0DC0twX%2F%2Fl5L%2B8%2Fhua8SzPV1bGTAJUIpF538vPUwsgHeAIS5a%2Fu9Yg7ppjElLqK%2FUVyvYWiA1LVWkKuA53gg6oeHSclZTxzH0E1Br55G3Fp9LEf8%2F49cqLloE3iS15pAsMEWGzxxLRDM5hBCrnZ%2FbQYtkezasQpBpuz4hl3YPWd1HTnoIbpjI2%2FT9eo4qsO6Qv5QzPXE93ebNKBhJCxHguNQpBh05K%2Fhg16IBXWlYwoMPv6ofod%2B1zFcmNk7AdEAkWU4QCvqhwdB%2FD%2FKO2qHkrJ%2FYHYbnb7sQGyrNIWhvCp7gEjgzCiWh07GytUQacY%2BwEbOMBN1c66WJxUVVf09tJ%2FYzkTyxbi3oqy46i7325%2F%2Bt89fSCdhRB0HAU5o8j3uh5Q3htyJagn1w0FyUy3IiwePtOijPpcA3OzIjPN7K5TARtuK1yK6PZl90J4RkmoCX5Vu9y4hZphxVZUolp%2F6GRDfYCc6ggzLEOws4N%2BCFbKwkYo7j053tlgPGEiOkZeJY9YeWFwjwxPZ35j6ugySVLyDU%2FvLaENCENLlCzuArr8Is%2FWNYAxCfXVWteD4ARwM6b%2FSjrVre1ph15PkwDI5Or2%2BzDC2X7d3DYikZOQUlFTUNLR3ZMZsNfGRBTHPPZbRVoRUoy4t81D9Byvj7ubkfR3t1DA4%3D";
+                    dataParam = new URLSearchParams(testParams).get("items");
+                }
+
+                const data = JSON.parse(decodeParams(dataParam));
 
                 autoResponses = data.ar.map((text, index) => ({
                     id: index,
@@ -1723,7 +2006,8 @@ https://plrk.co/p/ea_redeem`,
                 });
 
                 rc = data.rc || {};
-                if (Object.keys(rc).length === 0) rc["default"] = [0, [[0, 0]]];
+                if (Object.keys(rc).length === 0)
+                    rc["default"] = [1000, [[9, 22]]];
 
                 renderAll();
             } catch (error) {
@@ -1819,14 +2103,41 @@ https://plrk.co/p/ea_redeem`,
             showNotification("Товар скопирован", "success");
         };
 
+        const addItem = () => {
+            const moduleNames = Object.keys(modules);
+            const defaultModule = moduleNames[0] || "ItemReupload";
+
+            const firstMsgId = autoResponses[0]?.id ?? 0;
+            const lastMsgId = autoResponses[1]?.id ?? autoResponses[0]?.id ?? 0;
+
+            const newItem = [
+                defaultModule,
+                "Новый товар",
+                [firstMsgId, lastMsgId],
+                {},
+                0,
+                "default",
+            ];
+
+            itemsData.push(newItem);
+            selectedItemIndex = itemsData.length - 1;
+            renderAll();
+            showNotification("Товар добавлен", "success");
+        };
+
         const selectItem = (index) => {
             selectedItemIndex = index;
             renderItemsList();
             renderItemSettings();
         };
 
-        const getAROptions = (selectedId, limit = 40) =>
+        const getAROptions = (selectedId, limit = 40, filter = "") =>
             autoResponses
+                .filter((ar) =>
+                    filter
+                        ? ar.text.toLowerCase().includes(filter.toLowerCase())
+                        : true,
+                )
                 .map(
                     (ar) =>
                         `<option value="${ar.id}" ${selectedId === ar.id ? "selected" : ""}>${ar.text.length > limit ? ar.text.substring(0, limit) + "..." : ar.text}</option>`,
@@ -1860,11 +2171,35 @@ https://plrk.co/p/ea_redeem`,
             const { name: moduleName, ars: moduleARs } = getModuleInfo(item);
             const [firstMsgId, lastMsgId] = [item[2][0], item[2][1]];
 
-            const renderARSelect = (label, arIndex, arName) => `
+            const renderARSelect = (label, arIndex, arName) => {
+                const currentValue = item[2][arIndex] ?? firstMsgId;
+                const currentAR = autoResponses.find(
+                    (a) => a.id === currentValue,
+                );
+                const displayText = currentAR ? currentAR.text : "";
+                return `
                 <div class="ar-fixed-item">
                     <label class="form-label"><i class="fas fa-play"></i> ${arName}</label>
-                    <select class="form-select module-ar-select" data-ar-index="${arIndex}">${getAROptions(item[2][arIndex] || firstMsgId)}</select>
+                    <div class="ar-select-wrapper" data-ar-index="${arIndex}">
+                        <input type="text" class="form-input module-ar-select"
+                            data-ar-index="${arIndex}"
+                            value="${displayText}"
+                            placeholder="Начните вводить для поиска..."
+                            autocomplete="off">
+                        <div class="ar-select-dropdown" style="display: none;">
+                            ${autoResponses
+                                .map(
+                                    (ar) => `
+                                <div class="ar-select-option" data-ar-id="${ar.id}">
+                                    ${ar.text.length > 100 ? ar.text.substring(0, 100) + "..." : ar.text}
+                                </div>
+                            `,
+                                )
+                                .join("")}
+                        </div>
+                    </div>
                 </div>`;
+            };
 
             container.innerHTML = `
             <div style="display: flex; flex-direction: column; height: 100%;">
@@ -1944,13 +2279,93 @@ https://plrk.co/p/ea_redeem`,
                     item[5] = e.target.value;
                     renderItemSettings();
                 });
-            document.querySelectorAll(".module-ar-select").forEach((select) =>
-                select.addEventListener("change", (e) => {
-                    item[2][parseInt(e.target.dataset.arIndex)] = parseInt(
-                        e.target.value,
+
+            document
+                .querySelectorAll(".ar-select-wrapper")
+                .forEach((wrapper) => {
+                    const input = wrapper.querySelector("input");
+                    const dropdown = wrapper.querySelector(
+                        ".ar-select-dropdown",
                     );
-                }),
-            );
+                    const arIndex = parseInt(input.dataset.arIndex);
+
+                    const updateDropdown = (filter = "") => {
+                        const options =
+                            dropdown.querySelectorAll(".ar-select-option");
+                        options.forEach((opt) => {
+                            const arId = parseInt(opt.dataset.arId);
+                            const ar = autoResponses.find((a) => a.id === arId);
+                            if (
+                                ar &&
+                                ar.text
+                                    .toLowerCase()
+                                    .includes(filter.toLowerCase())
+                            ) {
+                                opt.style.display = "";
+                                if (arId === (item[2][arIndex] ?? firstMsgId)) {
+                                    opt.classList.add("selected");
+                                } else {
+                                    opt.classList.remove("selected");
+                                }
+                            } else {
+                                opt.style.display = "none";
+                                opt.classList.remove("selected");
+                            }
+                        });
+                    };
+
+                    const positionDropdown = () => {
+                        const rect = input.getBoundingClientRect();
+                        dropdown.style.left = rect.left + "px";
+                        dropdown.style.top = rect.bottom + 4 + "px";
+                        dropdown.style.width =
+                            Math.min(
+                                rect.width,
+                                window.innerWidth - rect.left - 20,
+                            ) + "px";
+                    };
+
+                    input.addEventListener("focus", () => {
+                        positionDropdown();
+                        dropdown.style.display = "block";
+                        updateDropdown(input.value);
+                    });
+
+                    input.addEventListener("input", () => {
+                        updateDropdown(input.value);
+                    });
+
+                    input.addEventListener("keydown", (e) => {
+                        if (e.key === "Escape") {
+                            dropdown.style.display = "none";
+                            input.blur();
+                        }
+                    });
+
+                    window.addEventListener("resize", positionDropdown);
+
+                    dropdown
+                        .querySelectorAll(".ar-select-option")
+                        .forEach((opt) => {
+                            opt.addEventListener("click", () => {
+                                const arId = parseInt(opt.dataset.arId);
+                                const ar = autoResponses.find(
+                                    (a) => a.id === arId,
+                                );
+                                if (ar) {
+                                    input.value = ar.text;
+                                    item[2][arIndex] = arId;
+                                    dropdown.style.display = "none";
+                                }
+                            });
+                        });
+
+                    document.addEventListener("click", (e) => {
+                        if (!wrapper.contains(e.target)) {
+                            dropdown.style.display = "none";
+                        }
+                    });
+                });
         };
 
         const renderAutoResponses = () => {
@@ -2130,6 +2545,12 @@ https://plrk.co/p/ea_redeem`,
                     searchQuery = e.target.value.trim();
                     renderItemsList();
                 });
+            document
+                .getElementById("add-item-btn")
+                .addEventListener("click", addItem);
+            document
+                .getElementById("bulk-edit-btn")
+                .addEventListener("click", showBulkEditModal);
             loadData();
         });
     </script>
@@ -2143,6 +2564,20 @@ https://plrk.co/p/ea_redeem`,
                     </h2>
                 </div>
                 <div class="panel-content">
+                    <button
+                        class="btn btn-primary btn-block btn-sm"
+                        id="add-item-btn"
+                        style="margin-bottom: 10px"
+                    >
+                        <i class="fas fa-plus"></i> Добавить товар
+                    </button>
+                    <button
+                        class="btn btn-block btn-sm"
+                        id="bulk-edit-btn"
+                        style="margin-bottom: 10px"
+                    >
+                        <i class="fas fa-edit"></i> Bulk Edit
+                    </button>
                     <div class="search-box">
                         <i class="fas fa-search"></i
                         ><input
