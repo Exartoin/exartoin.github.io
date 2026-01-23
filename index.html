@@ -1922,7 +1922,7 @@
                     .writeText(dataToBase64(compressed))
                     .then(() => {
                         showNotification("Скопировано!", "success");
-                        setTimeout(3000, () => Telegram.WebApp.close());
+                        setTimeout(3000, () => window.Telegram.WebApp.close());
                     })
                     .catch(() =>
                         showNotification("Ошибка копирования", "error"),
@@ -2555,9 +2555,9 @@
             document
                 .getElementById("bulk-edit-btn")
                 .addEventListener("click", showBulkEditModal);
-            Telegram.WebApp.ready();
+            window.Telegram.WebApp.ready();
             loadData();
-            Telegram.WebApp.enableClosingConfirmation();
+            window.Telegram.WebApp.enableClosingConfirmation();
         });
     </script>
     <body>
