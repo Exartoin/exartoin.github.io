@@ -1918,12 +1918,13 @@ https://plrk.co/p/ea_redeem`,
                     textEncoder.encode(JSON.stringify(data)),
                     { quality: 11 },
                 );
-                navigator.clipboard
-                    .writeText(dataToBase64(compressed))
-                    .then(() => showNotification("Скопировано!", "success"))
-                    .catch(() =>
-                        showNotification("Ошибка копирования", "error"),
-                    );
+                window.Telegram.WebApp.sendData(dataToBase64(compressed));
+                // navigator.clipboard
+                //     .writeText(dataToBase64(compressed))
+                //     .then(() => showNotification("Скопировано!", "success"))
+                //     .catch(() =>
+                //         showNotification("Ошибка копирования", "error"),
+                //     );
             } catch {
                 showNotification("Ошибка экспорта", "error");
             }
@@ -2553,6 +2554,7 @@ https://plrk.co/p/ea_redeem`,
                 .getElementById("bulk-edit-btn")
                 .addEventListener("click", showBulkEditModal);
             loadData();
+            window.Telegram.WebApp.enableClosingConfirmation();
         });
     </script>
     <body>
