@@ -1771,7 +1771,10 @@
                     return;
                 }
 
-                const escapedFindText = findText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                const escapedFindText = findText.replace(
+                    /[.*+?^${}()|[\]\\]/g,
+                    "\\$&",
+                );
                 const findRegex = new RegExp(`(${escapedFindText})`, "gi");
                 const affectedItems = itemsData.filter((item) =>
                     item[1].toLowerCase().includes(findText.toLowerCase()),
@@ -1791,17 +1794,32 @@
                                 .slice(0, 50)
                                 .map((item) => {
                                     const oldName = item[1];
-                                    const replacedName = oldName.replace(findRegex, (match) => {
-                                        const lowerMatch = match.toLowerCase();
-                                        const lowerReplace = replaceText.toLowerCase();
-                                        if (match === match.toUpperCase()) {
-                                            return replaceText.toUpperCase();
-                                        } else if (match[0] === match[0].toUpperCase()) {
-                                            return replaceText.charAt(0).toUpperCase() + replaceText.slice(1).toLowerCase();
-                                        } else {
-                                            return lowerReplace;
-                                        }
-                                    });
+                                    const replacedName = oldName.replace(
+                                        findRegex,
+                                        (match) => {
+                                            const lowerMatch =
+                                                match.toLowerCase();
+                                            const lowerReplace =
+                                                replaceText.toLowerCase();
+                                            if (match === match.toUpperCase()) {
+                                                return replaceText.toUpperCase();
+                                            } else if (
+                                                match[0] ===
+                                                match[0].toUpperCase()
+                                            ) {
+                                                return (
+                                                    replaceText
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                    replaceText
+                                                        .slice(1)
+                                                        .toLowerCase()
+                                                );
+                                            } else {
+                                                return lowerReplace;
+                                            }
+                                        },
+                                    );
                                     const newName = oldName
                                         .split(findRegex)
                                         .map((part, i) =>
@@ -1844,7 +1862,10 @@
                         return;
                     }
 
-                    const escapedFindText = findText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                    const escapedFindText = findText.replace(
+                        /[.*+?^${}()|[\]\\]/g,
+                        "\\$&",
+                    );
                     const findRegex = new RegExp(`(${escapedFindText})`, "gi");
 
                     let count = 0;
@@ -1859,8 +1880,13 @@
                                 const lowerReplace = replaceText.toLowerCase();
                                 if (match === match.toUpperCase()) {
                                     return replaceText.toUpperCase();
-                                } else if (match[0] === match[0].toUpperCase()) {
-                                    return replaceText.charAt(0).toUpperCase() + replaceText.slice(1).toLowerCase();
+                                } else if (
+                                    match[0] === match[0].toUpperCase()
+                                ) {
+                                    return (
+                                        replaceText.charAt(0).toUpperCase() +
+                                        replaceText.slice(1).toLowerCase()
+                                    );
                                 } else {
                                     return lowerReplace;
                                 }
@@ -1940,7 +1966,7 @@
                     .writeText(dataToBase64(compressed))
                     .then(() => {
                         showNotification("Скопировано!", "success");
-                        setTimeout(3000, () => window.Telegram.WebApp.close());
+                        setTimeout(() => window.Telegram.WebApp.close(), 3000);
                     })
                     .catch(() =>
                         showNotification("Ошибка копирования", "error"),
@@ -2126,11 +2152,19 @@
         };
 
         const addItem = () => {
-            const firstMsgId = autoResponses.length > 0 ? autoResponses[0]?.id : undefined;
-            const lastMsgId = autoResponses.length > 1 ? autoResponses[1]?.id : (autoResponses.length > 0 ? autoResponses[0]?.id : undefined);
+            const firstMsgId =
+                autoResponses.length > 0 ? autoResponses[0]?.id : undefined;
+            const lastMsgId =
+                autoResponses.length > 1
+                    ? autoResponses[1]?.id
+                    : autoResponses.length > 0
+                      ? autoResponses[0]?.id
+                      : undefined;
 
             const moduleNames = Object.keys(modules);
-            const defaultModule = moduleNames.includes("ItemReupload") ? "ItemReupload" : (moduleNames[0] || "Unknown");
+            const defaultModule = moduleNames.includes("ItemReupload")
+                ? "ItemReupload"
+                : moduleNames[0] || "Unknown";
 
             const newItem = [
                 defaultModule,
