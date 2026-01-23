@@ -1918,8 +1918,12 @@ https://plrk.co/p/ea_redeem`,
                     textEncoder.encode(JSON.stringify(data)),
                     { quality: 11 },
                 );
-                Telegram.WebApp.sendData(dataToBase64(compressed)).catch(() =>
-                    showNotification("Ошибка экспорта", "error"),
+                Telegram.WebApp.sendData(dataToBase64(compressed)).catch(
+                    (error) =>
+                        showNotification(
+                            `Ошибка экспорта ${error.message}`,
+                            "error",
+                        ),
                 );
             } catch {
                 showNotification("Ошибка экспорта", "error");
