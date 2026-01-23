@@ -1918,7 +1918,7 @@ https://plrk.co/p/ea_redeem`,
                     textEncoder.encode(JSON.stringify(data)),
                     { quality: 11 },
                 );
-                window.Telegram.WebApp.sendData(dataToBase64(compressed));
+                Telegram.WebApp.sendData(dataToBase64(compressed));
                 // navigator.clipboard
                 //     .writeText(dataToBase64(compressed))
                 //     .then(() => showNotification("Скопировано!", "success"))
@@ -2553,8 +2553,9 @@ https://plrk.co/p/ea_redeem`,
             document
                 .getElementById("bulk-edit-btn")
                 .addEventListener("click", showBulkEditModal);
+            Telegram.WebApp.ready();
             loadData();
-            window.Telegram.WebApp.enableClosingConfirmation();
+            Telegram.WebApp.enableClosingConfirmation();
         });
     </script>
     <body>
