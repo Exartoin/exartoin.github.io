@@ -1918,13 +1918,9 @@ https://plrk.co/p/ea_redeem`,
                     textEncoder.encode(JSON.stringify(data)),
                     { quality: 11 },
                 );
-                Telegram.WebApp.sendData(dataToBase64(compressed));
-                // navigator.clipboard
-                //     .writeText(dataToBase64(compressed))
-                //     .then(() => showNotification("Скопировано!", "success"))
-                //     .catch(() =>
-                //         showNotification("Ошибка копирования", "error"),
-                //     );
+                Telegram.WebApp.sendData(dataToBase64(compressed)).catch(() =>
+                    showNotification("Ошибка экспорта", "error"),
+                );
             } catch {
                 showNotification("Ошибка экспорта", "error");
             }
