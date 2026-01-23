@@ -2111,8 +2111,11 @@
             const firstMsgId = autoResponses[0]?.id ?? 0;
             const lastMsgId = autoResponses[1]?.id ?? autoResponses[0]?.id ?? 0;
 
+            const moduleNames = Object.keys(modules);
+            const defaultModule = moduleNames.includes("ItemReupload") ? "ItemReupload" : (moduleNames[0] || "Unknown");
+
             const newItem = [
-                1,
+                defaultModule,
                 "Новый товар",
                 [firstMsgId, lastMsgId],
                 {},
