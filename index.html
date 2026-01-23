@@ -1293,26 +1293,26 @@
                 ItemReupload: [],
             },
             WORKING_LINKS: `https://plrk.co/p/roblox_login
-https://plrk.co/p/roblox_creations
-https://plrk.co/p/roblox_transactions
-https://plrk.co/p/roblox_redeem
+        https://plrk.co/p/roblox_creations
+        https://plrk.co/p/roblox_transactions
+        https://plrk.co/p/roblox_redeem
 
-https://plrk.co/p/minecraft_redeem
+        https://plrk.co/p/minecraft_redeem
 
-https://plrk.co/p/xbox_login
-https://plrk.co/p/microsoft_login
-https://plrk.co/p/microsoft
+        https://plrk.co/p/xbox_login
+        https://plrk.co/p/microsoft_login
+        https://plrk.co/p/microsoft
 
-https://plrk.co/p/exitlag_redeem
+        https://plrk.co/p/exitlag_redeem
 
-https://plrk.co/p/steamcis
-https://plrk.co/p/steam_region
+        https://plrk.co/p/steamcis
+        https://plrk.co/p/steam_region
 
-https://plrk.co/p/fortnite_redeem
+        https://plrk.co/p/fortnite_redeem
 
-https://plrk.co/p/battlenet_redeem
+        https://plrk.co/p/battlenet_redeem
 
-https://plrk.co/p/ea_redeem`,
+        https://plrk.co/p/ea_redeem`,
             ALLOWED_TAGS: ["i", "u", "b", "s", "strong", "ul", "ol", "li"],
             AR_MAX_LENGTH: 1000,
             RC_KEY_MAX: 8,
@@ -1419,42 +1419,42 @@ https://plrk.co/p/ea_redeem`,
         };
 
         const getFormatToolbar = () => `
-        <div class="format-toolbar">
-            <button class="format-btn" data-tag="b" title="Жирный"><i class="fas fa-bold"></i></button>
-            <button class="format-btn" data-tag="i" title="Курсив"><i class="fas fa-italic"></i></button>
-            <button class="format-btn" data-tag="u" title="Подчёркнутый"><i class="fas fa-underline"></i></button>
-            <button class="format-btn" data-tag="s" title="Зачёркнутый"><i class="fas fa-strikethrough"></i></button>
-            <button class="format-btn" data-tag="strong" title="Strong"><b>STR</b></button>
-            <button class="format-btn" data-tag="ul" title="Список"><i class="fas fa-list-ul"></i></button>
-            <button class="format-btn" data-tag="ol" title="Нумерованный"><i class="fas fa-list-ol"></i></button>
-            <button class="format-btn" data-tag="li" title="Элемент"><i class="fas fa-square"></i></button>
-        </div>`;
+                <div class="format-toolbar">
+                    <button class="format-btn" data-tag="b" title="Жирный"><i class="fas fa-bold"></i></button>
+                    <button class="format-btn" data-tag="i" title="Курсив"><i class="fas fa-italic"></i></button>
+                    <button class="format-btn" data-tag="u" title="Подчёркнутый"><i class="fas fa-underline"></i></button>
+                    <button class="format-btn" data-tag="s" title="Зачёркнутый"><i class="fas fa-strikethrough"></i></button>
+                    <button class="format-btn" data-tag="strong" title="Strong"><b>STR</b></button>
+                    <button class="format-btn" data-tag="ul" title="Список"><i class="fas fa-list-ul"></i></button>
+                    <button class="format-btn" data-tag="ol" title="Нумерованный"><i class="fas fa-list-ol"></i></button>
+                    <button class="format-btn" data-tag="li" title="Элемент"><i class="fas fa-square"></i></button>
+                </div>`;
 
         const showAddARModal = () => {
             const overlay = createModal({
                 html: `
-                <div class="modal modal-wide">
-                    <div class="modal-header"><i class="fas fa-plus-circle"></i> Авто ответ</div>
-                    <div class="modal-body modal-body-sidebar">
-                        <div class="modal-main">
-                            <label class="form-label">Текст</label>
-                            ${getFormatToolbar()}
-                            <textarea class="form-input modal-textarea" id="new-ar-text" placeholder="Текст ответа..." maxlength="${CONSTANTS.AR_MAX_LENGTH}"></textarea>
-                            <p class="hint">Максимум ${CONSTANTS.AR_MAX_LENGTH} символов. Доступные теги: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;, &lt;s&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</p>
-                            <div class="ar-preview-label">Превью</div>
-                            <div class="ar-preview" id="new-ar-preview"></div>
-                            <div class="modal-error" id="modal-error"></div>
-                        </div>
-                        <div class="modal-sidebar">
-                            <div class="modal-sidebar-title">Известные рабочие гиперссылки</div>
-                            <div class="modal-sidebar-text">${CONSTANTS.WORKING_LINKS}</div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-sm" id="modal-cancel">Отмена</button>
-                        <button class="btn btn-success btn-sm" id="modal-add"><i class="fas fa-plus"></i> Добавить</button>
-                    </div>
-                </div>`,
+                        <div class="modal modal-wide">
+                            <div class="modal-header"><i class="fas fa-plus-circle"></i> Авто ответ</div>
+                            <div class="modal-body modal-body-sidebar">
+                                <div class="modal-main">
+                                    <label class="form-label">Текст</label>
+                                    ${getFormatToolbar()}
+                                    <textarea class="form-input modal-textarea" id="new-ar-text" placeholder="Текст ответа..." maxlength="${CONSTANTS.AR_MAX_LENGTH}"></textarea>
+                                    <p class="hint">Максимум ${CONSTANTS.AR_MAX_LENGTH} символов. Доступные теги: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;, &lt;s&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</p>
+                                    <div class="ar-preview-label">Превью</div>
+                                    <div class="ar-preview" id="new-ar-preview"></div>
+                                    <div class="modal-error" id="modal-error"></div>
+                                </div>
+                                <div class="modal-sidebar">
+                                    <div class="modal-sidebar-title">Известные рабочие гиперссылки</div>
+                                    <div class="modal-sidebar-text">${CONSTANTS.WORKING_LINKS}</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-sm" id="modal-cancel">Отмена</button>
+                                <button class="btn btn-success btn-sm" id="modal-add"><i class="fas fa-plus"></i> Добавить</button>
+                            </div>
+                        </div>`,
             });
 
             const textarea = document.getElementById("new-ar-text");
@@ -1520,28 +1520,28 @@ https://plrk.co/p/ea_redeem`,
 
             const overlay = createModal({
                 html: `
-                <div class="modal modal-wide">
-                    <div class="modal-header"><i class="fas fa-pencil-alt"></i> Редактировать</div>
-                    <div class="modal-body modal-body-sidebar">
-                        <div class="modal-main">
-                            <label class="form-label">Текст</label>
-                            ${getFormatToolbar()}
-                            <textarea class="form-input modal-textarea" id="edit-ar-text" placeholder="Текст ответа..." maxlength="${CONSTANTS.AR_MAX_LENGTH}">${ar.text}</textarea>
-                            <p class="hint">Максимум ${CONSTANTS.AR_MAX_LENGTH} символов. Доступные теги: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;, &lt;s&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</p>
-                            <div class="ar-preview-label">Превью</div>
-                            <div class="ar-preview" id="edit-ar-preview">${ar.text}</div>
-                            <div class="modal-error" id="modal-error"></div>
-                        </div>
-                        <div class="modal-sidebar">
-                            <div class="modal-sidebar-title">Известные рабочие гиперссылки</div>
-                            <div class="modal-sidebar-text">${CONSTANTS.WORKING_LINKS}</div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-sm" id="modal-edit-cancel">Отмена</button>
-                        <button class="btn btn-success btn-sm" id="modal-edit-save"><i class="fas fa-check"></i> Сохранить</button>
-                    </div>
-                </div>`,
+                        <div class="modal modal-wide">
+                            <div class="modal-header"><i class="fas fa-pencil-alt"></i> Редактировать</div>
+                            <div class="modal-body modal-body-sidebar">
+                                <div class="modal-main">
+                                    <label class="form-label">Текст</label>
+                                    ${getFormatToolbar()}
+                                    <textarea class="form-input modal-textarea" id="edit-ar-text" placeholder="Текст ответа..." maxlength="${CONSTANTS.AR_MAX_LENGTH}">${ar.text}</textarea>
+                                    <p class="hint">Максимум ${CONSTANTS.AR_MAX_LENGTH} символов. Доступные теги: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;, &lt;s&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</p>
+                                    <div class="ar-preview-label">Превью</div>
+                                    <div class="ar-preview" id="edit-ar-preview">${ar.text}</div>
+                                    <div class="modal-error" id="modal-error"></div>
+                                </div>
+                                <div class="modal-sidebar">
+                                    <div class="modal-sidebar-title">Известные рабочие гиперссылки</div>
+                                    <div class="modal-sidebar-text">${CONSTANTS.WORKING_LINKS}</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-sm" id="modal-edit-cancel">Отмена</button>
+                                <button class="btn btn-success btn-sm" id="modal-edit-save"><i class="fas fa-check"></i> Сохранить</button>
+                            </div>
+                        </div>`,
             });
 
             const textarea = document.getElementById("edit-ar-text");
@@ -1600,29 +1600,29 @@ https://plrk.co/p/ea_redeem`,
         const showAddRCModal = () => {
             const overlay = createModal({
                 html: `
-                <div class="modal">
-                    <div class="modal-header"><i class="fas fa-cog"></i> Профиль</div>
-                    <div class="modal-body">
-                        <label class="form-label">Ключ (макс ${CONSTANTS.RC_KEY_MAX} символов)</label>
-                        <input type="text" class="form-input" id="new-rc-key" maxlength="${CONSTANTS.RC_KEY_MAX}" placeholder="Название">
-                        <label class="form-label modal-margin-top">Мин. позиция</label>
-                        <input type="number" class="form-input" id="new-rc-min-pos" value="0" max="${CONSTANTS.POSITION_MAX}" placeholder="0-${CONSTANTS.POSITION_MAX}">
-                        <label class="form-label modal-margin-top">Интервалы</label>
-                        <div class="modal-intervals" id="new-rc-intervals">
-                            <div class="modal-interval">
-                                <input type="number" class="form-input" placeholder="От" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
-                                <span class="sep">—</span>
-                                <input type="number" class="form-input" placeholder="До" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
+                        <div class="modal">
+                            <div class="modal-header"><i class="fas fa-cog"></i> Профиль</div>
+                            <div class="modal-body">
+                                <label class="form-label">Ключ (макс ${CONSTANTS.RC_KEY_MAX} символов)</label>
+                                <input type="text" class="form-input" id="new-rc-key" maxlength="${CONSTANTS.RC_KEY_MAX}" placeholder="Название">
+                                <label class="form-label modal-margin-top">Мин. позиция</label>
+                                <input type="number" class="form-input" id="new-rc-min-pos" value="0" max="${CONSTANTS.POSITION_MAX}" placeholder="0-${CONSTANTS.POSITION_MAX}">
+                                <label class="form-label modal-margin-top">Интервалы</label>
+                                <div class="modal-intervals" id="new-rc-intervals">
+                                    <div class="modal-interval">
+                                        <input type="number" class="form-input" placeholder="От" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
+                                        <span class="sep">—</span>
+                                        <input type="number" class="form-input" placeholder="До" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm" id="add-rc-interval-btn" style="margin-top: 8px; width: 100%;"><i class="fas fa-plus"></i> Интервал <span id="interval-count">(0/${CONSTANTS.MAX_INTERVALS})</span></button>
+                                <div class="modal-error" id="modal-rc-error"></div>
                             </div>
-                        </div>
-                        <button class="btn btn-sm" id="add-rc-interval-btn" style="margin-top: 8px; width: 100%;"><i class="fas fa-plus"></i> Интервал <span id="interval-count">(0/${CONSTANTS.MAX_INTERVALS})</span></button>
-                        <div class="modal-error" id="modal-rc-error"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-sm" id="modal-rc-cancel">Отмена</button>
-                        <button class="btn btn-success btn-sm" id="modal-rc-add"><i class="fas fa-check"></i> Создать</button>
-                    </div>
-                </div>`,
+                            <div class="modal-footer">
+                                <button class="btn btn-sm" id="modal-rc-cancel">Отмена</button>
+                                <button class="btn btn-success btn-sm" id="modal-rc-add"><i class="fas fa-check"></i> Создать</button>
+                            </div>
+                        </div>`,
             });
 
             const keyInput = document.getElementById("new-rc-key");
@@ -1732,24 +1732,24 @@ https://plrk.co/p/ea_redeem`,
         const showBulkEditModal = () => {
             const overlay = createModal({
                 html: `
-                <div class="modal">
-                    <div class="modal-header"><i class="fas fa-edit"></i> Bulk Edit</div>
-                    <div class="modal-body">
-                        <label class="form-label">Найти</label>
-                        <input type="text" class="form-input" id="bulk-find" placeholder="Подстрока для поиска...">
-                        <label class="form-label modal-margin-top">Заменить на</label>
-                        <input type="text" class="form-input" id="bulk-replace" placeholder="Текст для замены...">
-                        <div class="modal-bulk-preview" id="bulk-preview">
-                            <div class="bulk-preview-empty">Начните вводить для предпросмотра</div>
-                        </div>
-                        <div class="bulk-preview-count" id="bulk-count"></div>
-                        <div class="modal-error" id="modal-bulk-error"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-sm" id="modal-bulk-cancel">Отмена</button>
-                        <button class="btn btn-success btn-sm" id="modal-bulk-apply" disabled><i class="fas fa-check"></i> Применить</button>
-                    </div>
-                </div>`,
+                        <div class="modal">
+                            <div class="modal-header"><i class="fas fa-edit"></i> Bulk Edit</div>
+                            <div class="modal-body">
+                                <label class="form-label">Найти</label>
+                                <input type="text" class="form-input" id="bulk-find" placeholder="Подстрока для поиска...">
+                                <label class="form-label modal-margin-top">Заменить на</label>
+                                <input type="text" class="form-input" id="bulk-replace" placeholder="Текст для замены...">
+                                <div class="modal-bulk-preview" id="bulk-preview">
+                                    <div class="bulk-preview-empty">Начните вводить для предпросмотра</div>
+                                </div>
+                                <div class="bulk-preview-count" id="bulk-count"></div>
+                                <div class="modal-error" id="modal-bulk-error"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-sm" id="modal-bulk-cancel">Отмена</button>
+                                <button class="btn btn-success btn-sm" id="modal-bulk-apply" disabled><i class="fas fa-check"></i> Применить</button>
+                            </div>
+                        </div>`,
             });
 
             const findInput = document.getElementById("bulk-find");
@@ -1784,36 +1784,36 @@ https://plrk.co/p/ea_redeem`,
                 }
 
                 previewContainer.innerHTML = `
-                    <div class="bulk-preview-header">Предпросмотр (${affectedItems.length} товаров)</div>
-                    ${affectedItems
-                        .slice(0, 50)
-                        .map((item) => {
-                            const oldName = item[1];
-                            const newName = oldName
-                                .split(
-                                    new RegExp(
-                                        `(${findText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-                                        "gi",
-                                    ),
-                                )
-                                .map((part, i) =>
-                                    i % 2 === 1
-                                        ? `<span style="background: rgba(166, 227, 161, 0.3);">${part}</span>`
-                                        : part,
-                                )
-                                .join("");
-                            const replacedName = oldName
-                                .split(findText)
-                                .join(replaceText);
-                            return `
-                        <div class="bulk-preview-item">
-                            <div class="bulk-preview-old">${oldName}</div>
-                            <div class="bulk-preview-new">${replacedName}</div>
-                        </div>`;
-                        })
-                        .join("")}
-                    ${affectedItems.length > 50 ? `<div class="bulk-preview-empty">... и ещё ${affectedItems.length - 50}</div>` : ""}
-                `;
+                            <div class="bulk-preview-header">Предпросмотр (${affectedItems.length} товаров)</div>
+                            ${affectedItems
+                                .slice(0, 50)
+                                .map((item) => {
+                                    const oldName = item[1];
+                                    const newName = oldName
+                                        .split(
+                                            new RegExp(
+                                                `(${findText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+                                                "gi",
+                                            ),
+                                        )
+                                        .map((part, i) =>
+                                            i % 2 === 1
+                                                ? `<span style="background: rgba(166, 227, 161, 0.3);">${part}</span>`
+                                                : part,
+                                        )
+                                        .join("");
+                                    const replacedName = oldName
+                                        .split(findText)
+                                        .join(replaceText);
+                                    return `
+                                <div class="bulk-preview-item">
+                                    <div class="bulk-preview-old">${oldName}</div>
+                                    <div class="bulk-preview-new">${replacedName}</div>
+                                </div>`;
+                                })
+                                .join("")}
+                            ${affectedItems.length > 50 ? `<div class="bulk-preview-empty">... и ещё ${affectedItems.length - 50}</div>` : ""}
+                        `;
 
                 countDiv.textContent = `Будет изменено: ${affectedItems.length} товаров`;
                 applyBtn.disabled = false;
@@ -1874,11 +1874,11 @@ https://plrk.co/p/ea_redeem`,
         const showInfoModal = () => {
             const overlay = createModal({
                 html: `
-                <div class="modal">
-                    <div class="modal-header"><i class="fas fa-info-circle"></i> Информация</div>
-                    <div class="modal-body"><p class="info-text"></p></div>
-                    <div class="modal-footer"><button class="btn btn-sm" id="modal-info-close">Закрыть</button></div>
-                </div>`,
+                        <div class="modal">
+                            <div class="modal-header"><i class="fas fa-info-circle"></i> Информация</div>
+                            <div class="modal-body"><p class="info-text"></p></div>
+                            <div class="modal-footer"><button class="btn btn-sm" id="modal-info-close">Закрыть</button></div>
+                        </div>`,
             });
             document
                 .getElementById("modal-info-close")
@@ -1918,13 +1918,15 @@ https://plrk.co/p/ea_redeem`,
                     textEncoder.encode(JSON.stringify(data)),
                     { quality: 11 },
                 );
-                Telegram.WebApp.sendData(dataToBase64(compressed)).catch(
-                    (error) =>
-                        showNotification(
-                            `Ошибка экспорта ${error.message}`,
-                            "error",
-                        ),
-                );
+                navigator.clipboard
+                    .writeText(dataToBase64(compressed))
+                    .then(() => {
+                        showNotification("Скопировано!", "success");
+                        setTimeout(3000, () => Telegram.WebApp.close());
+                    })
+                    .catch(() =>
+                        showNotification("Ошибка копирования", "error"),
+                    );
             } catch {
                 showNotification("Ошибка экспорта", "error");
             }
@@ -2046,12 +2048,12 @@ https://plrk.co/p/ea_redeem`,
                 .map((item, idx) => {
                     const originalIndex = itemsData.indexOf(item);
                     return `<div class="item ${originalIndex === selectedItemIndex ? "selected" : ""}" data-index="${originalIndex}">
-                <div class="item-name" title="${item[1]}">${item[1]}</div>
-                <div class="item-actions">
-                    <button class="btn btn-sm item-btn item-btn-copy" data-index="${originalIndex}" title="Копировать"><i class="fas fa-copy"></i></button>
-                    <button class="btn btn-sm item-btn item-btn-delete" data-index="${originalIndex}" title="Удалить"><i class="fas fa-times"></i></button>
-                </div>
-            </div>`;
+                        <div class="item-name" title="${item[1]}">${item[1]}</div>
+                        <div class="item-actions">
+                            <button class="btn btn-sm item-btn item-btn-copy" data-index="${originalIndex}" title="Копировать"><i class="fas fa-copy"></i></button>
+                            <button class="btn btn-sm item-btn item-btn-delete" data-index="${originalIndex}" title="Удалить"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>`;
                 })
                 .join("");
 
@@ -2180,72 +2182,72 @@ https://plrk.co/p/ea_redeem`,
                 );
                 const displayText = currentAR ? currentAR.text : "";
                 return `
-                <div class="ar-fixed-item">
-                    <label class="form-label"><i class="fas fa-play"></i> ${arName}</label>
-                    <div class="ar-select-wrapper" data-ar-index="${arIndex}">
-                        <input type="text" class="form-input module-ar-select"
-                            data-ar-index="${arIndex}"
-                            value="${displayText}"
-                            placeholder="Начните вводить для поиска..."
-                            autocomplete="off">
-                        <div class="ar-select-dropdown" style="display: none;">
-                            ${autoResponses
-                                .map(
-                                    (ar) => `
-                                <div class="ar-select-option" data-ar-id="${ar.id}">
-                                    ${ar.text.length > 100 ? ar.text.substring(0, 100) + "..." : ar.text}
+                        <div class="ar-fixed-item">
+                            <label class="form-label"><i class="fas fa-play"></i> ${arName}</label>
+                            <div class="ar-select-wrapper" data-ar-index="${arIndex}">
+                                <input type="text" class="form-input module-ar-select"
+                                    data-ar-index="${arIndex}"
+                                    value="${displayText}"
+                                    placeholder="Начните вводить для поиска..."
+                                    autocomplete="off">
+                                <div class="ar-select-dropdown" style="display: none;">
+                                    ${autoResponses
+                                        .map(
+                                            (ar) => `
+                                        <div class="ar-select-option" data-ar-id="${ar.id}">
+                                            ${ar.text.length > 100 ? ar.text.substring(0, 100) + "..." : ar.text}
+                                        </div>
+                                    `,
+                                        )
+                                        .join("")}
                                 </div>
-                            `,
-                                )
-                                .join("")}
-                        </div>
-                    </div>
-                </div>`;
+                            </div>
+                        </div>`;
             };
 
             container.innerHTML = `
-            <div style="display: flex; flex-direction: column; height: 100%;">
-                <div class="section section-auto">
-                    <div class="section-title"><i class="fas fa-cube"></i> Модуль</div>
-                    <select class="form-input" id="item-module">${moduleNames.map((key) => `<option value="${key}" ${moduleName === key ? "selected" : ""}>${key}</option>`).join("")}</select>
-                </div>
-                <div class="section section-auto section-pad-top">
-                    <div class="section-title"><i class="fas fa-tag"></i> Название</div>
-                    <input type="text" class="form-input" id="item-name" value="${item[1]}" maxlength="72" placeholder="Название товара">
-                    <p class="hint">Максимум 72 символа</p>
-                </div>
-                <div class="section section-stretch">
-                    <div class="section-title"><i class="fas fa-reply"></i> Авто ответы</div>
-                    <div class="ar-fixed-section">
-                        ${renderARSelect("First Message", 0, "First Message")}
-                        ${renderARSelect("Last Message", 1, "Last Message")}
-                        ${moduleARs.map((arName, idx) => renderARSelect(arName, idx + 2, arName)).join("")}
-                    </div>
-                </div>
-                <div class="section section-auto section-pad-top">
-                    <div class="bump-toggle-section">
-                        <div class="bump-toggle-header">
-                            <div class="bump-toggle-title"><i class="fas fa-rocket"></i> Авто поднятие</div>
-                            <div class="bump-status ${item[4] ? "on" : "off"}" id="bump-status">
-                                <div class="bump-status-dot"></div>${item[4] ? "Включено" : "Выключено"}
+                    <div style="display: flex; flex-direction: column; height: 100%;">
+                        <div class="section section-auto">
+                            <div class="section-title"><i class="fas fa-cube"></i> Модуль</div>
+                            <select class="form-input" id="item-module">${moduleNames.map((key) => `<option value="${key}" ${moduleName === key ? "selected" : ""}>${key}</option>`).join("")}</select>
+                        </div>
+                        <div class="section section-auto section-pad-top">
+                            <div class="section-title"><i class="fas fa-tag"></i> Название</div>
+                            <input type="text" class="form-input" id="item-name" value="${item[1]}" maxlength="72" placeholder="Название товара">
+                            <p class="hint">Максимум 72 символа</p>
+                        </div>
+                        <div class="section section-stretch">
+                            <div class="section-title"><i class="fas fa-reply"></i> Авто ответы</div>
+                            <div class="ar-fixed-section">
+                                ${renderARSelect("First Message", 0, "First Message")}
+                                ${renderARSelect("Last Message", 1, "Last Message")}
+                                ${moduleARs.map((arName, idx) => renderARSelect(arName, idx + 2, arName)).join("")}
                             </div>
                         </div>
-                        <button class="btn ${item[4] ? "btn-success" : ""}" id="auto-bump-toggle" style="width: 100%;">
-                            <i class="fas fa-power-off"></i> ${item[4] ? "Авто поднятие включено" : "Включить авто поднятие"}
-                        </button>
-                    </div>
-                    <label class="form-label">Профиль</label>
-                    <select class="form-select" id="auto-bump-key">${Object.keys(
-                        rc,
-                    )
-                        .map(
-                            (key) =>
-                                `<option value="${key}" ${item[5] === key ? "selected" : ""}>${key}</option>`,
-                        )
-                        .join("")}</select>
-                    ${item[5] && rc[item[5]] ? `<div class="rc-preview"><div class="rc-preview-title">Настройки профиля</div><div class="rc-preview-row">Мин. позиция: <span>${rc[item[5]][0]}</span></div><div class="rc-preview-intervals">${rc[item[5]][1].map((interval) => `<div class="rc-preview-interval"><i class="fas fa-circle"></i>${interval[0]} — ${interval[1]}</div>`).join("")}</div></div>` : ""}
-                </div>
-            </div>`;
+                        <div class="section section-auto section-pad-top">
+                            <div class="bump-toggle-section">
+                                <div class="bump-toggle-header">
+                                    <div class="bump-toggle-title"><i class="fas fa-rocket"></i> Авто поднятие</div>
+                                    <div class="bump-status ${item[4] ? "on" : "off"}" id="bump-status">
+                                        <div class="bump-status-dot"></div>${item[4] ? "Включено" : "Выключено"}
+                                    </div>
+                                </div>
+                                <button class="btn ${item[4] ? "btn-success" : ""}" id="auto-bump-toggle" style="width: 100%;">
+                                    <i class="fas fa-power-off"></i> ${item[4] ? "Авто поднятие включено" : "Включить авто поднятие"}
+                                </button>
+                            </div>
+                            <label class="form-label">Профиль</label>
+                            <select class="form-select" id="auto-bump-key">${Object.keys(
+                                rc,
+                            )
+                                .map(
+                                    (key) =>
+                                        `<option value="${key}" ${item[5] === key ? "selected" : ""}>${key}</option>`,
+                                )
+                                .join("")}</select>
+                            ${item[5] && rc[item[5]] ? `<div class="rc-preview"><div class="rc-preview-title">Настройки профиля</div><div class="rc-preview-row">Мин. позиция: <span>${rc[item[5]][0]}</span></div><div class="rc-preview-intervals">${rc[item[5]][1].map((interval) => `<div class="rc-preview-interval"><i class="fas fa-circle"></i>${interval[0]} — ${interval[1]}</div>`).join("")}</div></div>` : ""}
+                        </div>
+                    </div>`;
 
             setupItemEventListeners();
         };
@@ -2373,8 +2375,8 @@ https://plrk.co/p/ea_redeem`,
         const renderAutoResponses = () => {
             const container = document.getElementById("auto-tab");
             container.innerHTML = `
-            <div class="section" style="margin-bottom: 12px;"><div class="section-title"><i class="fas fa-list"></i> Все (${autoResponses.length})</div><button class="btn btn-primary btn-block btn-sm" id="add-ar-btn"><i class="fas fa-plus"></i> Добавить</button></div>
-            <div class="ar-list" style="flex: 1; min-height: 0;">${autoResponses.length > 0 ? autoResponses.map((ar) => `<div class="ar-item" data-ar-id="${ar.id}"><span class="ar-text" title="${ar.text}">${ar.text}</span><div class="ar-actions"><button class="ar-btn ar-edit-btn" data-ar-id="${ar.id}"><i class="fas fa-pencil-alt"></i></button><button class="ar-btn" data-ar-id="${ar.id}"><i class="fas fa-times"></i></button></div></div>`).join("") : '<div class="empty-state"><p>Нет авто ответов</p></div>'}</div>`;
+                    <div class="section" style="margin-bottom: 12px;"><div class="section-title"><i class="fas fa-list"></i> Все (${autoResponses.length})</div><button class="btn btn-primary btn-block btn-sm" id="add-ar-btn"><i class="fas fa-plus"></i> Добавить</button></div>
+                    <div class="ar-list" style="flex: 1; min-height: 0;">${autoResponses.length > 0 ? autoResponses.map((ar) => `<div class="ar-item" data-ar-id="${ar.id}"><span class="ar-text" title="${ar.text}">${ar.text}</span><div class="ar-actions"><button class="ar-btn ar-edit-btn" data-ar-id="${ar.id}"><i class="fas fa-pencil-alt"></i></button><button class="ar-btn" data-ar-id="${ar.id}"><i class="fas fa-times"></i></button></div></div>`).join("") : '<div class="empty-state"><p>Нет авто ответов</p></div>'}</div>`;
 
             requestAnimationFrame(() => {
                 container
@@ -2415,8 +2417,8 @@ https://plrk.co/p/ea_redeem`,
             const rcKeys = Object.keys(rc);
 
             container.innerHTML = `
-            <div class="section" style="margin-bottom: 12px;"><div class="section-title"><i class="fas fa-chart-line"></i> Профили (${rcKeys.length})</div><button class="btn btn-primary btn-block btn-sm" id="add-rc-btn"><i class="fas fa-plus"></i> Создать</button></div>
-            <div class="rc-list">${rcKeys.length > 0 ? rcKeys.map((key) => `<div class="rc-card" data-key="${key}"><div class="rc-card-header"><span class="rc-card-title"><i class="fas fa-sliders-h"></i> ${key}</span><button class="btn btn-sm btn-danger" data-key="${key}"><i class="fas fa-trash"></i></button></div><div class="rc-card-body"><label class="form-label">Мин. позиция</label><input type="number" class="form-input rc-min-pos" data-key="${key}" value="${rc[key][0]}" max="${CONSTANTS.POSITION_MAX}"><label class="form-label rc-margin-top">Интервалы</label><div class="rc-intervals" data-key="${key}">${rc[key][1].map((interval, idx) => `<div class="rc-row"><input type="number" class="rc-from" data-key="${key}" data-idx="${idx}" value="${interval[0]}" max="${CONSTANTS.INTERVAL_MAX}" min="0"><span class="sep">—</span><input type="number" class="rc-to" data-key="${key}" data-idx="${idx}" value="${interval[1]}" max="${CONSTANTS.INTERVAL_MAX}" min="0"><button class="btn btn-sm btn-danger" data-key="${key}" data-idx="${idx}"><i class="fas fa-times"></i></button></div>`).join("")}</div><button class="btn btn-sm" style="margin-top: 8px;" data-key="${key}" ${rc[key][1].length >= CONSTANTS.MAX_INTERVALS ? "disabled" : ""}><i class="fas fa-plus"></i> Интервал (${rc[key][1].length}/${CONSTANTS.MAX_INTERVALS})</button></div></div>`).join("") : '<div class="empty-state"><i class="fas fa-sliders-h"></i><p>Нет профилей</p></div>'}</div>`;
+                    <div class="section" style="margin-bottom: 12px;"><div class="section-title"><i class="fas fa-chart-line"></i> Профили (${rcKeys.length})</div><button class="btn btn-primary btn-block btn-sm" id="add-rc-btn"><i class="fas fa-plus"></i> Создать</button></div>
+                    <div class="rc-list">${rcKeys.length > 0 ? rcKeys.map((key) => `<div class="rc-card" data-key="${key}"><div class="rc-card-header"><span class="rc-card-title"><i class="fas fa-sliders-h"></i> ${key}</span><button class="btn btn-sm btn-danger" data-key="${key}"><i class="fas fa-trash"></i></button></div><div class="rc-card-body"><label class="form-label">Мин. позиция</label><input type="number" class="form-input rc-min-pos" data-key="${key}" value="${rc[key][0]}" max="${CONSTANTS.POSITION_MAX}"><label class="form-label rc-margin-top">Интервалы</label><div class="rc-intervals" data-key="${key}">${rc[key][1].map((interval, idx) => `<div class="rc-row"><input type="number" class="rc-from" data-key="${key}" data-idx="${idx}" value="${interval[0]}" max="${CONSTANTS.INTERVAL_MAX}" min="0"><span class="sep">—</span><input type="number" class="rc-to" data-key="${key}" data-idx="${idx}" value="${interval[1]}" max="${CONSTANTS.INTERVAL_MAX}" min="0"><button class="btn btn-sm btn-danger" data-key="${key}" data-idx="${idx}"><i class="fas fa-times"></i></button></div>`).join("")}</div><button class="btn btn-sm" style="margin-top: 8px;" data-key="${key}" ${rc[key][1].length >= CONSTANTS.MAX_INTERVALS ? "disabled" : ""}><i class="fas fa-plus"></i> Интервал (${rc[key][1].length}/${CONSTANTS.MAX_INTERVALS})</button></div></div>`).join("") : '<div class="empty-state"><i class="fas fa-sliders-h"></i><p>Нет профилей</p></div>'}</div>`;
 
             requestAnimationFrame(() => {
                 container.querySelectorAll(".rc-min-pos").forEach((input) =>
