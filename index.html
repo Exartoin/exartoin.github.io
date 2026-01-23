@@ -2108,14 +2108,11 @@
         };
 
         const addItem = () => {
-            const moduleNames = Object.keys(modules);
-            const defaultModule = moduleNames[0] || "ItemReupload";
-
             const firstMsgId = autoResponses[0]?.id ?? 0;
             const lastMsgId = autoResponses[1]?.id ?? autoResponses[0]?.id ?? 0;
 
             const newItem = [
-                defaultModule,
+                1,
                 "Новый товар",
                 [firstMsgId, lastMsgId],
                 {},
