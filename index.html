@@ -1945,11 +1945,8 @@
                             typeof moduleIndex === "string"
                                 ? moduleIndex
                                 : moduleNames[(moduleIndex || 1) - 1];
-                        const exportIndex = moduleName
-                            ? moduleNames.indexOf(moduleName) + 1
-                            : 1;
                         return [
-                            exportIndex,
+                            moduleName,
                             item[1],
                             item[2],
                             item[3],
@@ -2045,12 +2042,14 @@
                 itemsData = data.i;
                 const moduleNames = Object.keys(modules);
                 itemsData.forEach((item) => {
+                    const moduleIndex = item[0];
+                    const moduleName = typeof moduleIndex === "string" ? moduleIndex : moduleNames[(moduleIndex || 1) - 1];
+                    item[0] = moduleName || moduleNames[0] || "Unknown";
                     if (item[2].length < 2) {
                         item[2].push(
                             item[2].length === 0 ? firstMsgId : lastMsgId,
                         );
                     }
-                    if (!item[0]) item[0] = moduleNames[0] || "Unknown";
                 });
 
                 rc = data.rc || {};
@@ -2202,17 +2201,10 @@
 
         const getModuleInfo = (item) => {
             const moduleNames = Object.keys(modules);
-            const moduleIndex = item[0];
-            if (typeof moduleIndex === "string") {
-                return modules.hasOwnProperty(moduleIndex)
-                    ? { name: moduleIndex, ars: modules[moduleIndex] }
-                    : { name: moduleNames[0] || "Unknown", ars: [] };
-            }
-            const name = moduleNames[(moduleIndex || 1) - 1];
-            return {
-                name: name || moduleNames[0] || "Unknown",
-                ars: modules[name] || [],
-            };
+            const moduleName = item[0];
+            return modules.hasOwnProperty(moduleName)
+                ? { name: moduleName, ars: modules[moduleName] }
+                : { name: moduleNames[0] || "Unknown", ars: [] };
         };
 
         const renderItemSettings = () => {
