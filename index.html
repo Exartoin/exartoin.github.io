@@ -18,22 +18,22 @@
             --radius-sm: 6px;
             --transition: 0.15s;
             
-            /* Telegram ThemeParams with fallbacks */
-            --bg: var(--tg-theme-bg-color, #1c1c1e);
+            /* Telegram ThemeParams */
+            --bg: var(--tg-theme-bg-color, #1a1a1a);
             --text: var(--tg-theme-text-color, #ffffff);
-            --hint: var(--tg-theme-hint-color, #8e8e93);
-            --link: var(--tg-theme-link-color, #007aff);
-            --button: var(--tg-theme-button-color, #007aff);
+            --hint: var(--tg-theme-hint-color, #999999);
+            --link: var(--tg-theme-link-color, #5a9fd4);
+            --button: var(--tg-theme-button-color, #5a9fd4);
             --button-text: var(--tg-theme-button-text-color, #ffffff);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #2c2c2e);
-            --header-bg: var(--tg-theme-header-bg-color, #2c2c2e);
-            --accent-text: var(--tg-theme-accent-text-color, #007aff);
-            --section-bg: var(--tg-theme-section-bg-color, #3a3a3c);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #2a2a2a);
+            --header-bg: var(--tg-theme-header-bg-color, #2a2a2a);
+            --accent-text: var(--tg-theme-accent-text-color, #5a9fd4);
+            --section-bg: var(--tg-theme-section-bg-color, #333333);
             --section-header: var(--tg-theme-section-header-text-color, #ffffff);
-            --separator: var(--tg-theme-section-separator-color, #48484a);
-            --subtitle: var(--tg-theme-subtitle-text-color, #98989f);
-            --destructive: var(--tg-theme-destructive-text-color, #ff3b30);
-            --bottom-bar: var(--tg-theme-bottom-bar-bg-color, #2c2c2e);
+            --separator: var(--tg-theme-section-separator-color, #444444);
+            --subtitle: var(--tg-theme-subtitle-text-color, #aaaaaa);
+            --destructive: var(--tg-theme-destructive-text-color, #ff6b6b);
+            --bottom-bar: var(--tg-theme-bottom-bar-bg-color, #2a2a2a);
         }
 
         html, body {
@@ -1160,10 +1160,12 @@
                 flex-direction: row;
                 overflow-x: auto;
                 overflow-y: hidden;
-                scroll-behavior: smooth;
                 -webkit-overflow-scrolling: touch;
                 height: 100vh;
-                scroll-snap-type: x proximity;
+            }
+            
+            .app.snap-enabled {
+                scroll-snap-type: x mandatory;
             }
             
             .app::-webkit-scrollbar {
@@ -1182,7 +1184,7 @@
                 overflow: hidden;
             }
             
-            /* Center panel: 100% width, full screen - hides neighbors */
+            /* Center panel: 100% width, full screen */
             .center-panel {
                 flex-shrink: 0;
                 width: 100vw;
@@ -1192,15 +1194,6 @@
                 scroll-snap-align: start;
                 scroll-snap-stop: always;
                 overflow: hidden;
-                background: var(--bg);
-                position: relative;
-                z-index: 2;
-            }
-            
-            /* Left and right panels have lower z-index */
-            .left-panel, .right-panel {
-                position: relative;
-                z-index: 1;
             }
             
             /* Right panel: 85% width, shows hint of center panel */
@@ -1400,7 +1393,17 @@ https://plrk.co/p/ea_redeem`,
                 scrollPosition += widths[i];
             }
             
-            app.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+            // Отключаем scroll-snap перед программным скроллом
+            app.classList.remove('snap-enabled');
+            
+            // Мгновенный скролл без анимации
+            app.scrollLeft = scrollPosition;
+            
+            // Включаем scroll-snap обратно после скролла
+            requestAnimationFrame(() => {
+                app.classList.add('snap-enabled');
+            });
+            
             state.currentPanel = index;
         };
         
@@ -2356,12 +2359,18 @@ https://plrk.co/p/ea_redeem`,
 
             // Mobile touch handling
             const app = document.querySelector('.app');
+            
+            // Включаем snap для мобильных при загрузке
+            if (isMobile()) {
+                app.classList.add('snap-enabled');
+            }
+            
             app.addEventListener('touchstart', handleTouchStart, { passive: true });
             app.addEventListener('touchend', handleTouchEnd, { passive: true });
             
-            // Update current panel on scroll
+            // Update current panel on scroll (только когда snap включен - естественный скролл)
             app.addEventListener('scroll', () => {
-                if (!isMobile()) return;
+                if (!isMobile() || !app.classList.contains('snap-enabled')) return;
                 const newPanel = getCurrentPanelFromScroll(app.scrollLeft);
                 if (newPanel !== state.currentPanel) {
                     state.currentPanel = newPanel;
@@ -2371,42 +2380,16 @@ https://plrk.co/p/ea_redeem`,
             // Handle resize
             window.addEventListener('resize', () => {
                 if (!isMobile()) {
-                    document.querySelector('.app').scrollLeft = 0;
+                    app.classList.remove('snap-enabled');
+                    app.scrollLeft = 0;
+                } else {
+                    app.classList.add('snap-enabled');
                 }
             });
             
             // Init Telegram
-            const tg = window.Telegram.WebApp;
-            tg.ready();
-            tg.enableClosingConfirmation();
-            
-            // Apply Telegram theme
-            const applyTheme = () => {
-                const root = document.documentElement;
-                const theme = tg.themeParams;
-                
-                if (theme.bg_color) {
-                    root.style.setProperty('--tg-theme-bg-color', theme.bg_color);
-                    tg.setBackgroundColor(theme.bg_color);
-                }
-                if (theme.text_color) root.style.setProperty('--tg-theme-text-color', theme.text_color);
-                if (theme.hint_color) root.style.setProperty('--tg-theme-hint-color', theme.hint_color);
-                if (theme.link_color) root.style.setProperty('--tg-theme-link-color', theme.link_color);
-                if (theme.button_color) root.style.setProperty('--tg-theme-button-color', theme.button_color);
-                if (theme.button_text_color) root.style.setProperty('--tg-theme-button-text-color', theme.button_text_color);
-                if (theme.secondary_bg_color) root.style.setProperty('--tg-theme-secondary-bg-color', theme.secondary_bg_color);
-                if (theme.header_bg_color) root.style.setProperty('--tg-theme-header-bg-color', theme.header_bg_color);
-                if (theme.accent_text_color) root.style.setProperty('--tg-theme-accent-text-color', theme.accent_text_color);
-                if (theme.section_bg_color) root.style.setProperty('--tg-theme-section-bg-color', theme.section_bg_color);
-                if (theme.section_header_text_color) root.style.setProperty('--tg-theme-section-header-text-color', theme.section_header_text_color);
-                if (theme.section_separator_color) root.style.setProperty('--tg-theme-section-separator-color', theme.section_separator_color);
-                if (theme.subtitle_text_color) root.style.setProperty('--tg-theme-subtitle-text-color', theme.subtitle_text_color);
-                if (theme.destructive_text_color) root.style.setProperty('--tg-theme-destructive-text-color', theme.destructive_text_color);
-                if (theme.bottom_bar_bg_color) root.style.setProperty('--tg-theme-bottom-bar-bg-color', theme.bottom_bar_bg_color);
-            };
-            
-            applyTheme();
-            tg.onEvent('themeChanged', applyTheme);
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.enableClosingConfirmation();
             
             // Load data
             loadData();
