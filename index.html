@@ -1160,10 +1160,10 @@
                 flex-direction: row;
                 overflow-x: auto;
                 overflow-y: hidden;
-                scroll-snap-type: x mandatory;
                 scroll-behavior: smooth;
                 -webkit-overflow-scrolling: touch;
                 height: 100vh;
+                scroll-snap-type: x mandatory;
             }
             
             .app::-webkit-scrollbar {
@@ -1178,6 +1178,7 @@
                 border: none !important;
                 border-right: 1px solid var(--separator) !important;
                 scroll-snap-align: start;
+                scroll-snap-stop: always;
                 overflow: hidden;
             }
             
@@ -1188,7 +1189,8 @@
                 height: 100vh;
                 border: none !important;
                 border-right: 1px solid var(--separator) !important;
-                scroll-snap-align: center;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
                 overflow: hidden;
             }
             
@@ -1198,7 +1200,8 @@
                 width: 85vw;
                 height: 100vh;
                 border: none !important;
-                scroll-snap-align: end;
+                scroll-snap-align: start;
+                scroll-snap-stop: always;
                 overflow: hidden;
             }
             
@@ -1404,7 +1407,7 @@ https://plrk.co/p/ea_redeem`,
             if (!isMobile()) return;
             touchEndX = e.changedTouches[0].screenX;
             const diff = touchStartX - touchEndX;
-            const threshold = 50;
+            const threshold = 80; // Увеличенный порог для более точного свайпа
             
             if (Math.abs(diff) > threshold) {
                 if (diff > 0 && state.currentPanel < 2) {
@@ -1420,12 +1423,12 @@ https://plrk.co/p/ea_redeem`,
         // Get current panel based on scroll position
         const getCurrentPanelFromScroll = (scrollLeft) => {
             const widths = getPanelWidths();
-            const centerStart = widths[0]; // 85vw
-            const rightStart = widths[0] + widths[1]; // 85vw + 100vw = 185vw
+            const leftEnd = widths[0]; // 85vw
+            const centerEnd = widths[0] + widths[1]; // 85vw + 100vw = 185vw
             
-            if (scrollLeft < centerStart * 0.5) return 0;
-            if (scrollLeft < rightStart - widths[2] * 0.5) return 1;
-            return 2;
+            if (scrollLeft < leftEnd * 0.8) return 0; // В левой панели
+            if (scrollLeft < centerEnd - widths[2] * 0.2) return 1; // В центральной панели
+            return 2; // В правой панели
         };
 
         const showNotification = (message, type = "info") => {
