@@ -1,186 +1,264 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-    <head>
-        <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
-        <meta charset="UTF-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-        />
-        <title>Редактор товаров</title>
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        />
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Редактор товаров</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root {
-            --ctp-mocha-rosewater: #f5e0dc;
-            --ctp-mocha-flamingo: #f2cdcd;
-            --ctp-mocha-pink: #f5c2e7;
-            --ctp-mocha-mauve: #cba6f7;
-            --ctp-mocha-red: #f38ba8;
-            --ctp-mocha-maroon: #eba0ac;
-            --ctp-mocha-peach: #fab387;
-            --ctp-mocha-yellow: #f9e2af;
-            --ctp-mocha-green: #a6e3a1;
-            --ctp-mocha-teal: #94e2d5;
-            --ctp-mocha-sky: #89dceb;
-            --ctp-mocha-sapphire: #74c7ec;
-            --ctp-mocha-blue: #89b4fa;
-            --ctp-mocha-lavender: #b4befe;
-            --ctp-mocha-text: #cdd6f4;
-            --ctp-mocha-subtext1: #bac2de;
-            --ctp-mocha-subtext0: #a6adc8;
-            --ctp-mocha-overlay2: #9399b2;
-            --ctp-mocha-overlay1: #7f849c;
-            --ctp-mocha-overlay0: #6c7086;
-            --ctp-mocha-surface2: #585b70;
-            --ctp-mocha-surface1: #45475a;
-            --ctp-mocha-surface0: #313244;
-            --ctp-mocha-base: #1e1e2e;
-            --ctp-mocha-mantle: #181825;
-            --bg-base: var(--ctp-mocha-base);
-            --bg-mantle: var(--ctp-mocha-mantle);
-            --bg-surface0: var(--ctp-mocha-surface0);
-            --bg-surface1: var(--ctp-mocha-surface1);
-            --bg-surface2: var(--ctp-mocha-surface2);
-            --text: var(--ctp-mocha-text);
-            --text-sub: var(--ctp-mocha-subtext1);
-            --text-muted: var(--ctp-mocha-overlay0);
-            --accent: var(--ctp-mocha-mauve);
-            --accent-blue: var(--ctp-mocha-blue);
-            --accent-green: var(--ctp-mocha-green);
-            --accent-red: var(--ctp-mocha-red);
-            --accent-peach: var(--ctp-mocha-peach);
-            --border: var(--ctp-mocha-surface1);
-            --radius: 8px;
-            --radius-sm: 6px;
-        }
         * {
-            box-sizing: border-box;
-        }
-        html,
-        body {
             margin: 0;
             padding: 0;
-            background: var(--bg-base);
-            color: var(--text);
-            font-family:
-                -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                sans-serif;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --radius: 8px;
+            --radius-sm: 6px;
+            --transition: 0.15s;
+            
+            /* Telegram ThemeParams */
+            --bg: var(--tg-theme-bg-color, #1a1a1a);
+            --text: var(--tg-theme-text-color, #ffffff);
+            --hint: var(--tg-theme-hint-color, #999999);
+            --link: var(--tg-theme-link-color, #5a9fd4);
+            --button: var(--tg-theme-button-color, #5a9fd4);
+            --button-text: var(--tg-theme-button-text-color, #ffffff);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #2a2a2a);
+            --header-bg: var(--tg-theme-header-bg-color, #2a2a2a);
+            --accent-text: var(--tg-theme-accent-text-color, #5a9fd4);
+            --section-bg: var(--tg-theme-section-bg-color, #333333);
+            --section-header: var(--tg-theme-section-header-text-color, #ffffff);
+            --separator: var(--tg-theme-section-separator-color, #444444);
+            --subtitle: var(--tg-theme-subtitle-text-color, #aaaaaa);
+            --destructive: var(--tg-theme-destructive-text-color, #ff6b6b);
+            --bottom-bar: var(--tg-theme-bottom-bar-bg-color, #2a2a2a);
+        }
+
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             font-size: 14px;
             line-height: 1.5;
+            background: var(--bg);
+            color: var(--text);
             height: 100vh;
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
+
         .app {
             display: flex;
             height: 100vh;
         }
+
+        /* Panels */
         .panel {
             display: flex;
             flex-direction: column;
-            background: var(--bg-mantle);
+            background: var(--secondary-bg);
             overflow: hidden;
         }
+
         .panel-header {
             padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg-mantle);
+            border-bottom: 1px solid var(--separator);
+            background: var(--header-bg);
             flex-shrink: 0;
         }
+
         .panel-title {
-            margin: 0;
             font-size: 15px;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
+            color: var(--text);
         }
+
         .panel-title i {
-            color: var(--accent);
-            font-size: 16px;
+            color: var(--accent-text);
         }
+
         .panel-content {
             flex: 1;
             overflow-y: auto;
             padding: 12px;
         }
+
         .panel-content::-webkit-scrollbar {
             width: 4px;
         }
+
         .panel-content::-webkit-scrollbar-thumb {
-            background: var(--bg-surface2);
+            background: var(--hint);
             border-radius: 2px;
         }
+
         .panel-footer {
             padding: 12px 16px;
-            border-top: 1px solid var(--border);
-            background: var(--bg-mantle);
+            border-top: 1px solid var(--separator);
+            background: var(--secondary-bg);
             flex-shrink: 0;
         }
+
         .left-panel {
             width: 280px;
-            border-right: 1px solid var(--border);
+            border-right: 1px solid var(--separator);
         }
+
         .center-panel {
             flex: 1;
             min-width: 320px;
-            background: var(--bg-base);
-            overflow: hidden;
+            background: var(--bg);
         }
+
         .right-panel {
             width: 380px;
-            border-left: 1px solid var(--border);
+            border-left: 1px solid var(--separator);
         }
+
+        /* Form Elements */
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--link);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a9fd4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 32px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            color: var(--subtitle);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 14px;
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: var(--separator);
+            border-color: var(--link);
+        }
+
+        .btn-primary {
+            background: var(--button);
+            color: var(--button-text);
+            border-color: var(--button);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .btn-danger {
+            background: var(--destructive);
+            color: white;
+            border-color: var(--destructive);
+        }
+
+        .btn-sm {
+            padding: 8px 10px;
+            font-size: 12px;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Search */
         .search-box {
             position: relative;
             margin-bottom: 10px;
         }
+
         .search-box i {
             position: absolute;
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-muted);
+            color: var(--hint);
             font-size: 13px;
         }
+
         .search-input {
             width: 100%;
             padding: 10px 10px 10px 34px;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
             border-radius: var(--radius);
             color: var(--text);
             font-size: 13px;
-        }
-        .search-input:focus {
             outline: none;
-            border-color: var(--accent-blue);
         }
+
+        .search-input:focus {
+            border-color: var(--link);
+        }
+
+        /* Item List */
         .item-list {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
+
         .item {
             display: flex;
             align-items: center;
-            padding: 4px 12px;
-            background: var(--bg-surface0);
+            padding: 8px 12px;
+            background: var(--section-bg);
             border-radius: var(--radius);
             cursor: pointer;
-            transition: 0.15s;
+            transition: var(--transition);
         }
+
         .item:hover {
-            background: var(--bg-surface1);
+            background: var(--separator);
         }
+
         .item.selected {
-            background: var(--accent);
-            color: var(--bg-mantle);
+            background: var(--button);
+            color: var(--button-text);
         }
+
         .item-name {
             flex: 1;
             font-size: 13px;
@@ -189,16 +267,19 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .item-actions {
             display: flex;
             gap: 4px;
             opacity: 0;
-            transition: 0.15s;
+            transition: var(--transition);
         }
+
         .item:hover .item-actions,
         .item.selected .item-actions {
             opacity: 1;
         }
+
         .item-btn {
             width: 26px;
             height: 26px;
@@ -210,36 +291,68 @@
             justify-content: center;
             font-size: 12px;
         }
+
         .item-btn-copy {
-            background: var(--accent-green);
-            color: var(--bg-base);
+            background: #4caf50;
+            color: white;
         }
+
         .item-btn-delete {
-            background: var(--accent-red);
-            color: var(--bg-base);
+            background: var(--destructive);
+            color: white;
         }
+
+        /* Sections */
+        .section {
+            margin-bottom: 16px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-title i {
+            font-size: 11px;
+        }
+
+        /* Toggle */
         .toggle-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 10px 12px;
-            background: var(--bg-surface0);
+            background: var(--section-bg);
             border-radius: var(--radius);
             cursor: pointer;
             margin-bottom: 10px;
         }
+
         .bump-toggle-section {
-            background: var(--bg-surface0);
+            background: var(--section-bg);
             border-radius: var(--radius);
             padding: 12px;
             margin-bottom: 12px;
         }
+
         .bump-toggle-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
             margin-bottom: 12px;
         }
+
         .bump-toggle-title {
             display: flex;
             align-items: center;
@@ -247,10 +360,11 @@
             font-size: 13px;
             font-weight: 500;
         }
+
         .bump-toggle-title i {
-            color: var(--accent-peach);
-            font-size: 14px;
+            color: var(--subtitle);
         }
+
         .bump-status {
             display: flex;
             align-items: center;
@@ -260,70 +374,25 @@
             border-radius: var(--radius-sm);
             font-weight: 500;
         }
+
         .bump-status.off {
-            background: var(--bg-surface2);
-            color: var(--text-muted);
+            background: var(--separator);
+            color: var(--hint);
         }
+
         .bump-status.on {
-            background: rgba(166, 227, 161, 0.15);
-            color: var(--accent-green);
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
         }
+
         .bump-status-dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
             background: currentColor;
         }
-        .form-label {
-            display: block;
-            font-size: 11px;
-            color: var(--text-sub);
-            margin-bottom: 6px;
-            font-weight: 500;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-        .form-input,
-        .form-select {
-            width: 100%;
-            min-width: 0;
-            padding: 10px 12px;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            font-size: 14px;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2389b4fa' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            padding-right: 32px;
-        }
-        .form-input:focus,
-        .form-select:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-        }
-        .section {
-            margin-bottom: 16px;
-        }
-        .section:last-child {
-            margin-bottom: 0;
-        }
-        .section-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .section-title i {
-            font-size: 11px;
-        }
+
+        /* Auto Responses */
         .ar-list {
             display: flex;
             flex-direction: column;
@@ -331,114 +400,49 @@
             flex: 1;
             min-height: 0;
             overflow-y: auto;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
             border-radius: var(--radius);
             padding: 6px;
-            margin-bottom: 12px;
         }
+
         .ar-list::-webkit-scrollbar {
             width: 4px;
         }
+
         .ar-list::-webkit-scrollbar-thumb {
-            background: var(--bg-surface2);
+            background: var(--hint);
             border-radius: 2px;
         }
+
         .ar-item {
             display: flex;
             align-items: center;
             gap: 6px;
             padding: 8px 10px;
-            background: var(--bg-mantle);
+            background: var(--secondary-bg);
             border-radius: var(--radius-sm);
         }
+
         .ar-text {
             flex: 1;
             padding: 6px 8px;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
             border-radius: var(--radius-sm);
             color: var(--text);
             font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            cursor: pointer;
         }
-        .ar-fixed-section {
+
+        .ar-actions {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 12px;
-            flex-shrink: 0;
-            flex: 1;
-            overflow-y: auto;
-            min-height: 0;
-        }
-        .ar-fixed-section::-webkit-scrollbar {
-            width: 4px;
-        }
-        .ar-fixed-section::-webkit-scrollbar-thumb {
-            background: var(--bg-surface2);
-            border-radius: 2px;
-        }
-        .ar-fixed-item {
-            display: flex;
-            flex-direction: column;
             gap: 4px;
         }
-        .ar-fixed-item .form-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .ar-fixed-item .form-label i {
-            font-size: 10px;
-        }
-        .ar-select-wrapper {
-            position: relative;
-        }
-        .ar-select-wrapper input {
-            cursor: pointer;
-            width: 100%;
-            min-width: 0;
-        }
-        .ar-select-dropdown {
-            position: fixed;
-            max-height: 180px;
-            overflow-y: auto;
-            background: var(--bg-mantle);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        .ar-select-dropdown::-webkit-scrollbar {
-            width: 4px;
-        }
-        .ar-select-dropdown::-webkit-scrollbar-thumb {
-            background: var(--bg-surface2);
-            border-radius: 2px;
-        }
-        .ar-select-option {
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 13px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .ar-select-option:hover {
-            background: var(--bg-surface1);
-        }
-        .ar-select-option.selected {
-            background: var(--accent);
-            color: var(--bg-mantle);
-        }
+
         .ar-btn {
             width: 24px;
             height: 24px;
@@ -449,62 +453,91 @@
             align-items: center;
             justify-content: center;
             font-size: 11px;
-            background: var(--accent-red);
+            background: var(--destructive);
             color: white;
         }
-        .btn {
-            padding: 10px 14px;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            font-size: 13px;
-            font-weight: 500;
+
+        .ar-btn.edit {
+            background: var(--link);
+        }
+
+        /* AR Select */
+        .ar-select-wrapper {
+            position: relative;
+        }
+
+        .ar-select-wrapper input {
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: 0.15s;
         }
-        .btn:hover {
-            background: var(--bg-surface1);
-            border-color: var(--accent-blue);
+
+        .ar-select-dropdown {
+            position: fixed;
+            max-height: 180px;
+            overflow-y: auto;
+            background: var(--secondary-bg);
+            border: 1px solid var(--separator);
+            border-radius: var(--radius);
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: none;
         }
-        .btn-primary {
-            background: var(--accent-blue);
-            color: var(--bg-base);
-            border-color: var(--accent-blue);
+
+        .ar-select-dropdown::-webkit-scrollbar {
+            width: 4px;
         }
-        .btn-success {
-            background: var(--accent-green);
-            color: var(--bg-base);
-            border-color: var(--accent-green);
+
+        .ar-select-dropdown::-webkit-scrollbar-thumb {
+            background: var(--hint);
+            border-radius: 2px;
         }
-        .btn-danger {
-            background: var(--accent-red);
-            color: var(--bg-base);
-            border-color: var(--accent-red);
+
+        .ar-select-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .btn-sm {
-            padding: 8px 10px;
-            font-size: 12px;
+
+        .ar-select-option:hover {
+            background: var(--separator);
         }
-        .btn-block {
-            width: 100%;
+
+        .ar-select-option.selected {
+            background: var(--button);
+            color: var(--button-text);
         }
+
+        .ar-fixed-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        .ar-fixed-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        /* Tabs */
         .tabs {
             display: flex;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg-mantle);
+            border-bottom: 1px solid var(--separator);
+            background: var(--secondary-bg);
         }
+
         .tab {
             flex: 1;
             padding: 12px 8px;
             background: none;
             border: none;
             border-bottom: 2px solid transparent;
-            color: var(--text-muted);
+            color: var(--hint);
             cursor: pointer;
             font-size: 12px;
             font-weight: 500;
@@ -512,29 +545,36 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
-            transition: 0.15s;
+            transition: var(--transition);
         }
+
         .tab i {
             font-size: 13px;
         }
+
         .tab:hover {
             color: var(--text);
-            background: var(--bg-surface0);
+            background: var(--section-bg);
         }
+
         .tab.active {
-            color: var(--accent-blue);
-            border-bottom-color: var(--accent-blue);
+            color: var(--link);
+            border-bottom-color: var(--link);
         }
+
         .tab-content {
             display: none;
             padding: 12px;
             flex: 1;
             overflow: hidden;
-        }
-        .tab-content.active {
-            display: flex;
             flex-direction: column;
         }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* RC Cards */
         .rc-list {
             display: flex;
             flex-direction: column;
@@ -542,27 +582,32 @@
             max-height: calc(100vh - 200px);
             overflow-y: auto;
         }
+
         .rc-list::-webkit-scrollbar {
             width: 4px;
         }
+
         .rc-list::-webkit-scrollbar-thumb {
-            background: var(--bg-surface2);
+            background: var(--hint);
             border-radius: 2px;
         }
+
         .rc-card {
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
             border-radius: var(--radius);
             overflow: hidden;
         }
+
         .rc-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 12px;
-            background: var(--bg-mantle);
-            border-bottom: 1px solid var(--border);
+            background: var(--secondary-bg);
+            border-bottom: 1px solid var(--separator);
         }
+
         .rc-card-title {
             font-size: 13px;
             font-weight: 600;
@@ -570,53 +615,104 @@
             align-items: center;
             gap: 6px;
         }
+
         .rc-card-title i {
-            color: var(--accent-peach);
+            color: var(--subtitle);
         }
+
         .rc-card-body {
             padding: 10px 12px;
         }
+
         .rc-row {
             display: flex;
             align-items: center;
             gap: 6px;
             padding: 6px 8px;
-            background: var(--bg-mantle);
+            background: var(--secondary-bg);
             border-radius: var(--radius-sm);
             margin-bottom: 6px;
         }
+
         .rc-row:last-child {
             margin-bottom: 0;
         }
+
         .rc-row input {
             flex: 1;
             width: 0;
             padding: 6px 8px;
             text-align: center;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
             border-radius: var(--radius-sm);
             color: var(--text);
             font-size: 12px;
-        }
-        .rc-row input:focus {
             outline: none;
-            border-color: var(--accent-blue);
         }
+
+        .rc-row input:focus {
+            border-color: var(--link);
+        }
+
         .rc-row .sep {
-            color: var(--text-muted);
+            color: var(--hint);
             font-size: 11px;
         }
-        .rc-row .btn-danger {
-            width: 24px;
-            height: 24px;
-            padding: 0;
-            font-size: 11px;
+
+        .rc-preview {
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--section-bg);
+            border-radius: var(--radius);
+            font-size: 12px;
         }
+
+        .rc-preview-title {
+            font-size: 10px;
+            color: var(--hint);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .rc-preview-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+            color: var(--subtitle);
+        }
+
+        .rc-preview-row span {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .rc-preview-intervals {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .rc-preview-interval {
+            font-size: 11px;
+            color: var(--subtitle);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rc-preview-interval i {
+            font-size: 8px;
+            color: var(--accent-text);
+        }
+
+        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -624,9 +720,10 @@
             padding: 16px;
             backdrop-filter: blur(2px);
         }
+
         .modal {
-            background: var(--bg-mantle);
-            border: 1px solid var(--border);
+            background: var(--secondary-bg);
+            border: 1px solid var(--separator);
             border-radius: var(--radius);
             width: 100%;
             max-width: 400px;
@@ -635,49 +732,130 @@
             display: flex;
             flex-direction: column;
         }
+
         .modal-wide {
             max-width: 700px;
         }
+
         .modal-header {
             padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--separator);
             font-size: 15px;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
             flex-shrink: 0;
+            color: var(--text);
         }
+
         .modal-header i {
-            color: var(--accent);
+            color: var(--accent-text);
         }
+
         .modal-body {
             padding: 16px;
             flex: 1;
             overflow-y: auto;
         }
+
         .modal-body-sidebar {
             display: flex;
             gap: 16px;
             padding: 0;
         }
+
         .modal-main {
             flex: 1;
             padding: 16px;
             min-width: 0;
         }
+
+        .modal-sidebar {
+            width: 280px;
+            background: var(--section-bg);
+            border-left: 1px solid var(--separator);
+            padding: 16px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .modal-sidebar-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .modal-sidebar-text {
+            font-size: 13px;
+            color: var(--subtitle);
+            white-space: pre-wrap;
+            line-height: 1.6;
+            word-break: break-all;
+        }
+
+        .modal-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--separator);
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .modal-intervals {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .modal-interval {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .modal-interval input {
+            flex: 1;
+            width: 0;
+            padding: 8px 10px;
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .modal-interval input:focus {
+            border-color: var(--link);
+        }
+
+        .modal-error {
+            color: var(--destructive);
+            font-size: 11px;
+            margin-top: 8px;
+            min-height: 16px;
+        }
+
+        /* Format Toolbar */
         .format-toolbar {
             display: flex;
             gap: 4px;
             margin-bottom: 10px;
             flex-wrap: wrap;
         }
+
         .format-btn {
             width: 32px;
             height: 32px;
             padding: 0;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
             border-radius: var(--radius-sm);
             color: var(--text);
             cursor: pointer;
@@ -685,87 +863,152 @@
             align-items: center;
             justify-content: center;
             font-size: 12px;
-            transition: all 0.15s;
+            transition: all var(--transition);
         }
+
         .format-btn:hover {
-            background: var(--bg-surface1);
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
+            background: var(--separator);
+            border-color: var(--link);
+            color: var(--link);
         }
+
         .format-btn:active {
             transform: scale(0.95);
         }
-        .modal-sidebar {
-            width: 280px;
-            background: var(--bg-surface0);
-            border-left: 1px solid var(--border);
-            padding: 16px;
-            overflow-y: auto;
-            flex-shrink: 0;
+
+        /* Textarea */
+        .modal-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 10px 12px;
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
         }
-        .modal-sidebar-title {
+
+        .modal-textarea:focus {
+            border-color: var(--link);
+        }
+
+        /* Preview */
+        .ar-preview {
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--section-bg);
+            border: 1px solid var(--separator);
+            border-radius: var(--radius);
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text);
+            min-height: 60px;
+            max-height: 150px;
+            overflow-y: auto;
+            word-wrap: break-word;
+        }
+
+        .ar-preview:empty::before {
+            content: "Превью текста...";
+            color: var(--hint);
+        }
+
+        .ar-preview-label {
+            font-size: 11px;
+            color: var(--subtitle);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .ar-preview ul, .ar-preview ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .ar-preview li {
+            margin-bottom: 4px;
+        }
+
+        /* Bulk Preview */
+        .modal-bulk-preview {
+            margin-top: 16px;
+            border: 1px solid var(--separator);
+            border-radius: var(--radius);
+            background: var(--section-bg);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .modal-bulk-preview::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .modal-bulk-preview::-webkit-scrollbar-thumb {
+            background: var(--hint);
+            border-radius: 2px;
+        }
+
+        .bulk-preview-header {
+            padding: 10px 12px;
+            background: var(--secondary-bg);
+            border-bottom: 1px solid var(--separator);
             font-size: 11px;
             font-weight: 600;
-            color: var(--accent);
+            color: var(--accent-text);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 10px;
+            position: sticky;
+            top: 0;
         }
-        .modal-sidebar-text {
-            font-size: 13px;
-            color: var(--text-sub);
-            white-space: pre-wrap;
-            line-height: 1.6;
-            word-break: break-all;
-        }
-        .modal-footer {
-            padding: 12px 16px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .modal-intervals {
+
+        .bulk-preview-item {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            margin-top: 10px;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--separator);
         }
-        .modal-interval {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+
+        .bulk-preview-item:last-child {
+            border-bottom: none;
         }
-        .modal-interval input {
-            flex: 1;
-            width: 0;
-            padding: 8px 10px;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            color: var(--text);
+
+        .bulk-preview-old {
+            font-size: 12px;
+            color: var(--destructive);
+            text-decoration: line-through;
+            margin-bottom: 4px;
+        }
+
+        .bulk-preview-new {
+            font-size: 12px;
+            color: #4caf50;
+        }
+
+        .bulk-preview-count {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--hint);
+        }
+
+        .bulk-preview-empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--hint);
             font-size: 13px;
         }
-        .modal-interval .btn-danger {
-            width: 28px;
-            height: 28px;
-            padding: 0;
-        }
-        .modal-error {
-            color: var(--accent-red);
-            font-size: 11px;
-            margin-top: 8px;
-            min-height: 16px;
-        }
+
+        /* Notification */
         .notification {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             padding: 12px 16px;
-            background: var(--bg-surface1);
-            border: 1px solid var(--accent);
+            background: var(--section-bg);
+            border: 1px solid var(--accent-text);
             border-radius: var(--radius);
             z-index: 1001;
             font-size: 13px;
@@ -774,21 +1017,27 @@
             gap: 8px;
             animation: slideUp 0.2s ease;
         }
+
         .notification.success {
-            border-color: var(--accent-green);
+            border-color: #4caf50;
         }
+
         .notification.error {
-            border-color: var(--accent-red);
+            border-color: var(--destructive);
         }
+
         .notification i {
             font-size: 14px;
         }
+
         .notification.success i {
-            color: var(--accent-green);
+            color: #4caf50;
         }
+
         .notification.error i {
-            color: var(--accent-red);
+            color: var(--destructive);
         }
+
         @keyframes slideUp {
             from {
                 transform: translateX(-50%) translateY(10px);
@@ -799,90 +1048,81 @@
                 opacity: 1;
             }
         }
+
+        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: var(--text-muted);
+            color: var(--hint);
         }
+
         .empty-state i {
             font-size: 36px;
             opacity: 0.3;
             margin-bottom: 10px;
         }
+
         .empty-state h3 {
             margin: 0 0 6px;
             font-size: 14px;
             font-weight: 500;
-            color: var(--text-sub);
+            color: var(--subtitle);
         }
+
         .empty-state p {
             margin: 0;
             font-size: 12px;
         }
+
+        /* Hint */
         .hint {
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--hint);
             margin-top: 4px;
         }
-        .rc-preview {
-            margin-top: 10px;
-            padding: 10px;
-            background: var(--bg-surface0);
-            border-radius: var(--radius);
+
+        /* Info */
+        .info-text {
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .info-check-label {
+            margin-bottom: 8px;
+            padding: 8px 10px;
             font-size: 12px;
         }
-        .rc-preview-title {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
+
+        .info-check-input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--button);
         }
-        .rc-preview-row {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 4px;
-            color: var(--text-sub);
-        }
-        .rc-preview-row span {
-            color: var(--text);
-            font-weight: 500;
-        }
-        .rc-preview-intervals {
-            display: flex;
-            flex-direction: inherit;
-            gap: 15px;
-            margin-top: 6px;
-        }
-        .rc-preview-interval {
-            font-size: 11px;
-            color: var(--text-sub);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .rc-preview-interval i {
-            font-size: 8px;
-            color: var(--accent);
-        }
+
+        /* Footer */
         .footer-actions {
             display: flex;
             gap: 8px;
         }
+
         .footer-btn-info {
             flex: 0 0 44px;
             height: 44px;
             padding: 0;
         }
+
         .footer-btn-export {
             flex: 1;
-            margin-left: auto;
         }
+
         .items-count {
             font-weight: 400;
             color: var(--text);
             font-size: 13px;
+            margin-left: auto;
         }
+
+        /* Layout helpers */
         .section-stretch {
             flex: 1;
             min-height: 0;
@@ -891,428 +1131,216 @@
             overflow: hidden;
             margin-top: 12px;
         }
+
         .section-auto {
             flex: 0 0 auto;
         }
+
         .section-pad-top {
             padding-top: 12px;
         }
-        #item-settings {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            min-height: 0;
-        }
-        #item-settings .section {
-            flex-shrink: 0;
-        }
-        #item-settings .section-stretch {
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        #item-settings .ar-fixed-section {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        #item-settings .ar-fixed-item {
-            flex-shrink: 0;
-        }
-        .ar-actions {
-            display: flex;
-            gap: 4px;
-        }
-        .modal-textarea {
-            height: 200px;
-            resize: vertical;
-        }
-        .modal-margin-top {
+
+        .margin-top {
             margin-top: 12px;
         }
-        .modal-bulk-preview {
-            margin-top: 16px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: var(--bg-surface0);
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .modal-bulk-preview::-webkit-scrollbar {
-            width: 4px;
-        }
-        .modal-bulk-preview::-webkit-scrollbar-thumb {
-            background: var(--bg-surface2);
-            border-radius: 2px;
-        }
-        .bulk-preview-header {
-            padding: 10px 12px;
-            background: var(--bg-mantle);
-            border-bottom: 1px solid var(--border);
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: sticky;
-            top: 0;
-        }
-        .bulk-preview-item {
-            display: flex;
-            flex-direction: column;
-            padding: 8px 12px;
-            border-bottom: 1px solid var(--border);
-        }
-        .bulk-preview-item:last-child {
-            border-bottom: none;
-        }
-        .bulk-preview-old {
-            font-size: 12px;
-            color: var(--accent-red);
-            text-decoration: line-through;
-            margin-bottom: 4px;
-        }
-        .bulk-preview-new {
-            font-size: 12px;
-            color: var(--accent-green);
-        }
-        .bulk-preview-count {
-            margin-top: 8px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .bulk-preview-empty {
-            padding: 20px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .rc-margin-top {
-            margin-top: 10px;
-        }
-        .info-text {
-            white-space: pre-wrap;
-            line-height: 1.6;
-        }
-        .info-check-label {
-            margin-bottom: 8px;
-            padding: 8px 10px;
-            font-size: 12px;
-        }
-        .info-check-input {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--accent);
-        }
-        .ar-preview {
-            margin-top: 10px;
-            padding: 10px;
-            background: var(--bg-surface0);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 13px;
-            line-height: 1.6;
-            color: var(--text);
-            min-height: 60px;
-            max-height: 150px;
-            overflow-y: auto;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-        }
-        .ar-preview:empty::before {
-            content: "Превью текста...";
-            color: var(--text-muted);
-        }
-        .ar-preview-label {
-            font-size: 11px;
-            color: var(--text-sub);
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-        .ar-preview ul,
-        .ar-preview ol {
-            margin: 0;
-            padding-left: 20px;
-        }
-        .ar-preview li {
-            margin-bottom: 4px;
-        }
+
+        /* Responsive */
         @media (max-width: 1200px) {
-            .left-panel {
-                width: 240px;
-            }
-            .right-panel {
-                width: 320px;
-            }
+            .left-panel { width: 240px; }
+            .right-panel { width: 320px; }
         }
+
         @media (max-width: 900px) {
-            html,
-            body {
-                height: auto;
-                min-height: 100vh;
-                overflow: auto;
+            html, body {
+                height: 100vh;
+                overflow: hidden;
             }
+            
             .app {
-                flex-direction: column;
-                height: auto;
-                min-height: 100vh;
+                flex-direction: row;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+                height: 100vh;
             }
-            .panel {
-                width: 100% !important;
-                border: none !important;
-                border-bottom: 1px solid var(--border) !important;
-                height: auto;
-                max-height: none;
-                overflow: visible;
+            
+            .app::-webkit-scrollbar {
+                display: none;
             }
-            .panel-content {
-                max-height: none;
-                overflow: visible;
-                flex: 1 1 auto;
-            }
-            .center-panel {
-                order: 2;
-                min-width: 0;
-                display: flex;
-                flex-direction: column;
-            }
-            .center-panel .panel-content {
-                flex: 1 1 auto;
-                overflow: visible;
-                min-height: 0;
-            }
-            .center-panel #item-settings {
-                overflow: visible;
-            }
-            .center-panel #item-settings .section-stretch {
-                overflow: visible;
-                flex: 0 0 auto;
-                min-height: auto;
-            }
-            .center-panel #item-settings .ar-fixed-section {
-                max-height: none;
-                overflow: visible;
-            }
+            
+            /* Left panel: 85% width, shows hint of center panel */
             .left-panel {
-                order: 1;
+                flex-shrink: 0;
+                width: 85vw;
+                height: 100vh;
+                border: none !important;
+                border-right: 1px solid var(--separator) !important;
+                scroll-snap-align: start;
+                overflow: hidden;
             }
+            
+            /* Center panel: 100% width, full screen */
+            .center-panel {
+                flex-shrink: 0;
+                width: 100vw;
+                height: 100vh;
+                border: none !important;
+                border-right: 1px solid var(--separator) !important;
+                scroll-snap-align: center;
+                overflow: hidden;
+            }
+            
+            /* Right panel: 85% width, shows hint of center panel */
             .right-panel {
-                order: 3;
+                flex-shrink: 0;
+                width: 85vw;
+                height: 100vh;
+                border: none !important;
+                scroll-snap-align: end;
+                overflow: hidden;
             }
-            .item-actions {
-                opacity: 1;
+            
+            .panel-content {
+                max-height: calc(100vh - 140px);
+                overflow-y: auto;
             }
-            .rc-list {
-                max-height: none;
-            }
-            .ar-list {
-                flex: 1;
-                min-height: 200px;
-                max-height: none;
-            }
-            #rc-tab {
-                max-height: none;
-                flex: 1 1 auto;
-            }
-            .tab-content {
-                flex: 1 1 auto;
-                overflow: visible;
-            }
+            
+            .item-actions { opacity: 1; }
+            
             .modal-overlay {
                 padding: 10px;
                 align-items: flex-end;
             }
-            .modal {
-                max-height: 85vh;
-            }
+            
+            .modal { max-height: 85vh; }
         }
+
         @media (max-width: 480px) {
-            html,
-            body {
-                font-size: 13px;
-            }
-            .panel-header {
-                padding: 10px 12px;
-            }
-            .panel-title {
-                font-size: 14px;
-            }
-            .panel-title i {
-                font-size: 14px;
-            }
-            .panel-content {
-                padding: 10px;
-            }
-            .search-input {
-                font-size: 16px;
-                padding: 12px 12px 12px 36px;
-            }
-            .item {
-                padding: 10px 12px;
-            }
-            .item-name {
-                font-size: 13px;
-            }
-            .item-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 13px;
-            }
-            .tabs {
-                padding: 0;
-            }
-            .tab {
-                padding: 12px 8px;
-                font-size: 11px;
-                flex-direction: column;
-                gap: 4px;
-            }
-            .tab i {
-                font-size: 16px;
-            }
-            .tab span {
-                display: none;
-            }
-            .section-title {
-                font-size: 10px;
-            }
-            .form-input,
-            .form-select {
-                font-size: 16px;
-                padding: 12px;
-            }
-            .btn {
-                padding: 12px 14px;
-                font-size: 13px;
-                min-height: 44px;
-            }
-            .btn-sm {
-                padding: 10px 12px;
-            }
-            .ar-item {
-                padding: 8px 10px;
-            }
-            .ar-text {
-                font-size: 13px;
-            }
-            .ar-btn {
-                width: 28px;
-                height: 28px;
-            }
-            .rc-row {
-                padding: 8px;
-            }
-            .rc-row input {
-                padding: 8px;
-                font-size: 14px;
-            }
-            .rc-preview {
-                padding: 12px;
-            }
-            .toggle-row {
-                padding: 12px;
-            }
-            .modal-header {
-                padding: 12px 16px;
-                font-size: 14px;
-            }
-            .modal-body {
-                padding: 16px;
-            }
-            .modal-footer {
-                padding: 12px 16px;
-            }
-            .modal-interval {
-                flex-wrap: wrap;
-            }
-            .modal-interval input {
-                flex: 1 1 40%;
-            }
-            .modal-interval .btn-danger {
-                width: 36px;
-                height: 36px;
-            }
+            html, body { font-size: 13px; }
+            .panel-header { padding: 10px 12px; }
+            .panel-title { font-size: 14px; }
+            .panel-content { padding: 10px; }
+            .search-input { font-size: 16px; padding: 12px 12px 12px 36px; }
+            .item { padding: 10px 12px; }
+            .item-name { font-size: 13px; }
+            .item-btn { width: 28px; height: 28px; font-size: 13px; }
+            .tabs { padding: 0; }
+            .tab { padding: 12px 8px; font-size: 11px; flex-direction: column; gap: 4px; }
+            .tab i { font-size: 16px; }
+            .tab span { display: none; }
+            .section-title { font-size: 10px; }
+            .form-input, .form-select { font-size: 16px; padding: 12px; }
+            .btn { padding: 12px 14px; font-size: 13px; min-height: 44px; }
+            .btn-sm { padding: 10px 12px; }
+            .modal-header { padding: 12px 16px; font-size: 14px; }
+            .modal-body { padding: 16px; }
+            .modal-footer { padding: 12px 16px; }
+            .modal-wide { max-width: 100%; }
+            .modal-body-sidebar { flex-direction: column; }
+            .modal-sidebar { width: 100%; border-left: none; border-top: 1px solid var(--separator); max-height: 200px; }
             .notification {
                 left: 10px;
                 right: 10px;
                 transform: none;
                 bottom: 10px;
-                padding: 12px 14px;
-                font-size: 13px;
-            }
-            @keyframes slideUp {
-                from {
-                    transform: translateY(20px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            }
-            .modal-wide {
-                max-width: 100%;
-                height: 90vh;
-            }
-            .modal-body-sidebar {
-                flex-direction: column;
-            }
-            .modal-sidebar {
-                width: 100%;
-                border-left: none;
-                border-top: 1px solid var(--border);
-                max-height: 200px;
-            }
-            .modal-sidebar-text {
-                font-size: 12px;
-            }
-        }
-        @media (max-width: 360px) {
-            .panel-header {
-                padding: 8px 10px;
-            }
-            .panel-content {
-                padding: 8px;
-            }
-            .tab {
-                padding: 10px 4px;
-            }
-            .btn {
-                padding: 10px 8px;
-                font-size: 12px;
             }
         }
     </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Left Panel - Items List -->
+        <div class="panel left-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <i class="fas fa-box"></i>
+                    Товары
+                    <span class="items-count" id="items-count">(0)</span>
+                </h2>
+            </div>
+            <div class="panel-content">
+                <button class="btn btn-primary btn-block btn-sm" id="add-item-btn" style="margin-bottom: 10px">
+                    <i class="fas fa-plus"></i> Добавить товар
+                </button>
+                <button class="btn btn-block btn-sm" id="bulk-edit-btn" style="margin-bottom: 10px">
+                    <i class="fas fa-edit"></i> Bulk Edit
+                </button>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" id="search-input" placeholder="Поиск...">
+                </div>
+                <div class="item-list" id="items-list"></div>
+            </div>
+            <div class="panel-footer">
+                <label class="toggle-row info-check-label">
+                    <span>Подтверждать удаление</span>
+                    <input type="checkbox" id="confirm-delete" class="info-check-input" checked>
+                </label>
+                <div class="footer-actions">
+                    <button class="btn btn-primary footer-btn-info" id="info-btn" title="Информация">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <button class="btn btn-success footer-btn-export" id="export-btn">
+                        <i class="fas fa-download"></i> Экспорт
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel - Item Settings -->
+        <div class="panel center-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <i class="fas fa-sliders-h"></i>
+                    Настройки
+                </h2>
+            </div>
+            <div class="panel-content" id="item-settings"></div>
+        </div>
+
+        <!-- Right Panel - Global Settings -->
+        <div class="panel right-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <i class="fas fa-cogs"></i>
+                    Настройки
+                </h2>
+            </div>
+            <div class="tabs">
+                <button class="tab active" data-tab="auto">
+                    <i class="fas fa-reply"></i>
+                    <span>Авто-ответы</span>
+                </button>
+                <button class="tab" data-tab="rc">
+                    <i class="fas fa-rocket"></i>
+                    <span>Авто-поднятие</span>
+                </button>
+            </div>
+            <div class="tab-content active" id="auto-tab"></div>
+            <div class="tab-content" id="rc-tab"></div>
+        </div>
+    </div>
+
     <script>
+        // Constants
         const CONSTANTS = {
-            DEFAULT_MODULES: {
-                ItemReupload: [],
-            },
+            DEFAULT_MODULES: { ItemReupload: [] },
             WORKING_LINKS: `https://plrk.co/p/roblox_login
-        https://plrk.co/p/roblox_creations
-        https://plrk.co/p/roblox_transactions
-        https://plrk.co/p/roblox_redeem
-
-        https://plrk.co/p/minecraft_redeem
-
-        https://plrk.co/p/xbox_login
-        https://plrk.co/p/microsoft_login
-        https://plrk.co/p/microsoft
-
-        https://plrk.co/p/exitlag_redeem
-
-        https://plrk.co/p/steamcis
-        https://plrk.co/p/steam_region
-
-        https://plrk.co/p/fortnite_redeem
-
-        https://plrk.co/p/battlenet_redeem
-
-        https://plrk.co/p/ea_redeem`,
+https://plrk.co/p/roblox_creations
+https://plrk.co/p/roblox_transactions
+https://plrk.co/p/roblox_redeem
+https://plrk.co/p/minecraft_redeem
+https://plrk.co/p/xbox_login
+https://plrk.co/p/microsoft_login
+https://plrk.co/p/microsoft
+https://plrk.co/p/exitlag_redeem
+https://plrk.co/p/steamcis
+https://plrk.co/p/steam_region
+https://plrk.co/p/fortnite_redeem
+https://plrk.co/p/battlenet_redeem
+https://plrk.co/p/ea_redeem`,
             ALLOWED_TAGS: ["i", "u", "b", "s", "strong", "ul", "ol", "li"],
             AR_MAX_LENGTH: 1000,
             RC_KEY_MAX: 8,
@@ -1321,68 +1349,117 @@
             MAX_INTERVALS: 10,
         };
 
-        let itemsData = [];
-        let autoResponses = [];
-        let rc = {};
-        let modules = {};
-        let selectedItemIndex = -1;
-        let brotli;
-        let confirmDelete = true;
-        let searchQuery = "";
-        const textEncoder = new TextEncoder();
-        const textDecoder = new TextDecoder();
+        // State
+        const state = {
+            items: [],
+            autoResponses: [],
+            rc: {},
+            modules: {},
+            selectedIndex: -1,
+            brotli: null,
+            confirmDelete: true,
+            searchQuery: "",
+            currentPanel: 0 // 0 = left, 1 = center, 2 = right
+        };
 
-        const base64ToData = (base64) =>
-            new Uint8Array([...atob(base64)].map((c) => c.charCodeAt(0)));
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
+
+        // Utilities
+        const base64ToData = (base64) => new Uint8Array([...atob(base64)].map(c => c.charCodeAt(0)));
         const dataToBase64 = (data) => btoa(String.fromCharCode(...data));
+
+        // Mobile Navigation
+        const isMobile = () => window.innerWidth <= 900;
+        
+        // Panel widths in mobile: left=85%, center=100%, right=85%
+        const getPanelWidths = () => {
+            const vw = window.innerWidth;
+            return [vw * 0.85, vw, vw * 0.85];
+        };
+        
+        const scrollToPanel = (index) => {
+            if (!isMobile()) return;
+            const app = document.querySelector('.app');
+            const widths = getPanelWidths();
+            
+            let scrollPosition = 0;
+            for (let i = 0; i < index; i++) {
+                scrollPosition += widths[i];
+            }
+            
+            app.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+            state.currentPanel = index;
+        };
+        
+        // Touch handling for swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        const handleTouchStart = (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        };
+        
+        const handleTouchEnd = (e) => {
+            if (!isMobile()) return;
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            const threshold = 50;
+            
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0 && state.currentPanel < 2) {
+                    // Swipe left - next panel
+                    scrollToPanel(state.currentPanel + 1);
+                } else if (diff < 0 && state.currentPanel > 0) {
+                    // Swipe right - previous panel
+                    scrollToPanel(state.currentPanel - 1);
+                }
+            }
+        };
+        
+        // Get current panel based on scroll position
+        const getCurrentPanelFromScroll = (scrollLeft) => {
+            const widths = getPanelWidths();
+            const centerStart = widths[0]; // 85vw
+            const rightStart = widths[0] + widths[1]; // 85vw + 100vw = 185vw
+            
+            if (scrollLeft < centerStart * 0.5) return 0;
+            if (scrollLeft < rightStart - widths[2] * 0.5) return 1;
+            return 2;
+        };
 
         const showNotification = (message, type = "info") => {
             document.querySelector(".notification")?.remove();
             const notification = document.createElement("div");
             notification.className = `notification ${type}`;
-            const icons = {
-                error: "fa-exclamation-circle",
-                success: "fa-check-circle",
-                info: "fa-info-circle",
-            };
+            const icons = { error: "fa-exclamation-circle", success: "fa-check-circle", info: "fa-info-circle" };
             notification.innerHTML = `<i class="fas ${icons[type]}"></i><span>${message}</span>`;
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 2500);
         };
 
-        const sanitizeText = (html) => {
+        const sanitizeHTML = (html) => {
             const div = document.createElement("div");
             div.innerHTML = html;
+            
             const stripTags = (node) => {
-                if (
-                    CONSTANTS.ALLOWED_TAGS.includes(node.tagName?.toLowerCase())
-                ) {
-                    const newEl = document.createElement(
-                        node.tagName.toLowerCase(),
-                    );
-                    Array.from(node.attributes).forEach((attr) => {
-                        if (attr.name !== "style")
-                            newEl.removeAttribute(attr.name);
+                const tag = node.tagName?.toLowerCase();
+                if (CONSTANTS.ALLOWED_TAGS.includes(tag)) {
+                    const el = document.createElement(tag);
+                    Array.from(node.childNodes).forEach(child => {
+                        el.appendChild(child.nodeType === Node.TEXT_NODE ? child.cloneNode(true) : stripTags(child));
                     });
-                    Array.from(node.childNodes).forEach((child) => {
-                        newEl.appendChild(
-                            child.nodeType === Node.TEXT_NODE
-                                ? child.cloneNode(true)
-                                : stripTags(child),
-                        );
-                    });
-                    return newEl;
+                    return el;
                 }
-                return node.nodeType === Node.TEXT_NODE
-                    ? node.cloneNode(true)
-                    : null;
+                return node.nodeType === Node.TEXT_NODE ? node.cloneNode(true) : null;
             };
-            const resultDiv = document.createElement("div");
-            Array.from(div.childNodes).forEach((child) => {
+            
+            const result = document.createElement("div");
+            Array.from(div.childNodes).forEach(child => {
                 const stripped = stripTags(child);
-                if (stripped) resultDiv.appendChild(stripped);
+                if (stripped) result.appendChild(stripped);
             });
-            return resultDiv.innerHTML;
+            return result.innerHTML;
         };
 
         const insertTag = (textarea, tag) => {
@@ -1393,1303 +1470,906 @@
             const before = text.substring(0, start);
             const after = text.substring(end);
 
+            let insertText, newStart, newEnd;
+            
             if (tag === "ul" || tag === "ol") {
-                textarea.value =
-                    before + `<${tag}>\n<li></li>\n</${tag}>` + after;
-                textarea.selectionStart = textarea.selectionEnd =
-                    start + tag.length + 3;
+                insertText = `<${tag}>\n<li></li>\n</${tag}>`;
+                newStart = newEnd = start + tag.length + 3;
             } else if (tag === "li") {
-                textarea.value = before + "<li></li>" + after;
-                textarea.selectionStart = textarea.selectionEnd = start + 4;
+                insertText = "<li></li>";
+                newStart = newEnd = start + 4;
             } else {
-                textarea.value =
-                    before + `<${tag}>${selected}</${tag}>` + after;
-                textarea.selectionStart = start + tag.length + 2;
-                textarea.selectionEnd = end + tag.length + 2;
+                insertText = `<${tag}>${selected}</${tag}>`;
+                newStart = start + tag.length + 2;
+                newEnd = end + tag.length + 2;
             }
+            
+            textarea.value = before + insertText + after;
+            textarea.selectionStart = newStart;
+            textarea.selectionEnd = newEnd;
             textarea.focus();
         };
 
-        const createModal = (options) => {
+        const createModal = (html) => {
             const overlay = document.createElement("div");
             overlay.className = "modal-overlay";
-            overlay.innerHTML = options.html;
+            overlay.innerHTML = html;
             document.body.appendChild(overlay);
             return overlay;
         };
 
-        const getFormatToolbar = () => `
-                <div class="format-toolbar">
-                    <button class="format-btn" data-tag="b" title="Жирный"><i class="fas fa-bold"></i></button>
-                    <button class="format-btn" data-tag="i" title="Курсив"><i class="fas fa-italic"></i></button>
-                    <button class="format-btn" data-tag="u" title="Подчёркнутый"><i class="fas fa-underline"></i></button>
-                    <button class="format-btn" data-tag="s" title="Зачёркнутый"><i class="fas fa-strikethrough"></i></button>
-                    <button class="format-btn" data-tag="strong" title="Strong"><b>STR</b></button>
-                    <button class="format-btn" data-tag="ul" title="Список"><i class="fas fa-list-ul"></i></button>
-                    <button class="format-btn" data-tag="ol" title="Нумерованный"><i class="fas fa-list-ol"></i></button>
-                    <button class="format-btn" data-tag="li" title="Элемент"><i class="fas fa-square"></i></button>
-                </div>`;
+        const formatToolbarHTML = `
+            <div class="format-toolbar">
+                <button class="format-btn" data-tag="b" title="Жирный"><i class="fas fa-bold"></i></button>
+                <button class="format-btn" data-tag="i" title="Курсив"><i class="fas fa-italic"></i></button>
+                <button class="format-btn" data-tag="u" title="Подчёркнутый"><i class="fas fa-underline"></i></button>
+                <button class="format-btn" data-tag="s" title="Зачёркнутый"><i class="fas fa-strikethrough"></i></button>
+                <button class="format-btn" data-tag="strong" title="Strong"><b>STR</b></button>
+                <button class="format-btn" data-tag="ul" title="Список"><i class="fas fa-list-ul"></i></button>
+                <button class="format-btn" data-tag="ol" title="Нумерованный"><i class="fas fa-list-ol"></i></button>
+                <button class="format-btn" data-tag="li" title="Элемент"><i class="fas fa-square"></i></button>
+            </div>`;
 
-        const showAddARModal = () => {
-            const overlay = createModal({
-                html: `
-                        <div class="modal modal-wide">
-                            <div class="modal-header"><i class="fas fa-plus-circle"></i> Авто ответ</div>
-                            <div class="modal-body modal-body-sidebar">
-                                <div class="modal-main">
-                                    <label class="form-label">Текст</label>
-                                    ${getFormatToolbar()}
-                                    <textarea class="form-input modal-textarea" id="new-ar-text" placeholder="Текст ответа..." maxlength="${CONSTANTS.AR_MAX_LENGTH}"></textarea>
-                                    <p class="hint">Максимум ${CONSTANTS.AR_MAX_LENGTH} символов. Доступные теги: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;, &lt;s&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</p>
-                                    <div class="ar-preview-label">Превью</div>
-                                    <div class="ar-preview" id="new-ar-preview"></div>
-                                    <div class="modal-error" id="modal-error"></div>
-                                </div>
-                                <div class="modal-sidebar">
-                                    <div class="modal-sidebar-title">Известные рабочие гиперссылки</div>
-                                    <div class="modal-sidebar-text">${CONSTANTS.WORKING_LINKS}</div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-sm" id="modal-cancel">Отмена</button>
-                                <button class="btn btn-success btn-sm" id="modal-add"><i class="fas fa-plus"></i> Добавить</button>
-                            </div>
-                        </div>`,
-            });
+        // Modal Functions
+        const showARModal = (isEdit = false, arId = null) => {
+            const ar = isEdit ? state.autoResponses.find(a => a.id === arId) : null;
+            const overlay = createModal(`
+                <div class="modal modal-wide">
+                    <div class="modal-header">
+                        <i class="fas ${isEdit ? 'fa-pencil-alt' : 'fa-plus-circle'}"></i>
+                        ${isEdit ? 'Редактировать авто-ответ' : 'Новый авто-ответ'}
+                    </div>
+                    <div class="modal-body modal-body-sidebar">
+                        <div class="modal-main">
+                            <label class="form-label">Текст</label>
+                            ${formatToolbarHTML}
+                            <textarea class="modal-textarea" id="ar-text" placeholder="Текст ответа..." maxlength="${CONSTANTS.AR_MAX_LENGTH}">${isEdit ? ar.text : ''}</textarea>
+                            <p class="hint">Максимум ${CONSTANTS.AR_MAX_LENGTH} символов. Доступные теги: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;, &lt;s&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</p>
+                            <div class="ar-preview-label">Превью</div>
+                            <div class="ar-preview" id="ar-preview">${isEdit ? ar.text : ''}</div>
+                            <div class="modal-error" id="modal-error"></div>
+                        </div>
+                        <div class="modal-sidebar">
+                            <div class="modal-sidebar-title">Рабочие гиперссылки</div>
+                            <div class="modal-sidebar-text">${CONSTANTS.WORKING_LINKS}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-sm" id="modal-cancel">Отмена</button>
+                        <button class="btn btn-success btn-sm" id="modal-save">
+                            <i class="fas ${isEdit ? 'fa-check' : 'fa-plus'}"></i>
+                            ${isEdit ? 'Сохранить' : 'Добавить'}
+                        </button>
+                    </div>
+                </div>`);
 
-            const textarea = document.getElementById("new-ar-text");
+            const textarea = document.getElementById("ar-text");
             const errorDiv = document.getElementById("modal-error");
-            const previewDiv = document.getElementById("new-ar-preview");
+            const previewDiv = document.getElementById("ar-preview");
 
             const updatePreview = () => {
-                previewDiv.innerHTML = sanitizeText(textarea.value).replace(
-                    /\n/g,
-                    "<br>",
-                );
+                previewDiv.innerHTML = sanitizeHTML(textarea.value).replace(/\n/g, "<br>");
             };
+
             textarea.addEventListener("input", updatePreview);
-            textarea.addEventListener("click", updatePreview);
+            overlay.querySelectorAll(".format-btn").forEach(btn => {
+                btn.addEventListener("click", () => insertTag(textarea, btn.dataset.tag));
+            });
 
-            overlay
-                .querySelectorAll(".format-btn")
-                .forEach((btn) =>
-                    btn.addEventListener("click", () =>
-                        insertTag(textarea, btn.dataset.tag),
-                    ),
-                );
-            setTimeout(() => textarea.focus(), 100);
+            const save = () => {
+                const text = textarea.value.trim();
+                if (text.length < 1) {
+                    errorDiv.textContent = "Минимум 1 символ";
+                    return;
+                }
+                if (text.length > CONSTANTS.AR_MAX_LENGTH) {
+                    errorDiv.textContent = `Максимум ${CONSTANTS.AR_MAX_LENGTH} символов`;
+                    return;
+                }
 
-            document
-                .getElementById("modal-cancel")
-                .addEventListener("click", () => overlay.remove());
-            document
-                .getElementById("modal-add")
-                .addEventListener("click", () => {
-                    const text = textarea.value.trim();
-                    if (text.length < 1) {
-                        errorDiv.textContent = "Минимум 1 символ";
-                        return;
-                    }
-                    if (text.length > CONSTANTS.AR_MAX_LENGTH) {
-                        errorDiv.textContent = `Максимум ${CONSTANTS.AR_MAX_LENGTH} символов`;
-                        return;
-                    }
-                    const newId =
-                        autoResponses.length > 0
-                            ? Math.max(...autoResponses.map((a) => a.id)) + 1
-                            : 0;
-                    autoResponses.push({ id: newId, text: sanitizeText(text) });
-                    overlay.remove();
-                    renderAll();
-                    showNotification("Добавлен", "success");
-                });
+                if (isEdit) {
+                    ar.text = sanitizeHTML(text);
+                } else {
+                    const newId = state.autoResponses.length > 0 ? Math.max(...state.autoResponses.map(a => a.id)) + 1 : 0;
+                    state.autoResponses.push({ id: newId, text: sanitizeHTML(text) });
+                }
+                
+                overlay.remove();
+                renderAll();
+                showNotification(isEdit ? "Сохранено" : "Добавлен", "success");
+            };
 
+            document.getElementById("modal-cancel").addEventListener("click", () => overlay.remove());
+            document.getElementById("modal-save").addEventListener("click", save);
             textarea.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") overlay.remove();
-                if (e.key === "Enter" && e.ctrlKey)
-                    document.getElementById("modal-add").click();
+                if (e.key === "Enter" && e.ctrlKey) save();
             });
             overlay.addEventListener("click", (e) => {
                 if (e.target === overlay) overlay.remove();
             });
-        };
 
-        const showEditARModal = (arId) => {
-            const ar = autoResponses.find((a) => a.id === arId);
-            if (!ar) return;
-
-            const overlay = createModal({
-                html: `
-                        <div class="modal modal-wide">
-                            <div class="modal-header"><i class="fas fa-pencil-alt"></i> Редактировать</div>
-                            <div class="modal-body modal-body-sidebar">
-                                <div class="modal-main">
-                                    <label class="form-label">Текст</label>
-                                    ${getFormatToolbar()}
-                                    <textarea class="form-input modal-textarea" id="edit-ar-text" placeholder="Текст ответа..." maxlength="${CONSTANTS.AR_MAX_LENGTH}">${ar.text}</textarea>
-                                    <p class="hint">Максимум ${CONSTANTS.AR_MAX_LENGTH} символов. Доступные теги: &lt;b&gt;, &lt;i&gt;, &lt;u&gt;, &lt;s&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</p>
-                                    <div class="ar-preview-label">Превью</div>
-                                    <div class="ar-preview" id="edit-ar-preview">${ar.text}</div>
-                                    <div class="modal-error" id="modal-error"></div>
-                                </div>
-                                <div class="modal-sidebar">
-                                    <div class="modal-sidebar-title">Известные рабочие гиперссылки</div>
-                                    <div class="modal-sidebar-text">${CONSTANTS.WORKING_LINKS}</div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-sm" id="modal-edit-cancel">Отмена</button>
-                                <button class="btn btn-success btn-sm" id="modal-edit-save"><i class="fas fa-check"></i> Сохранить</button>
-                            </div>
-                        </div>`,
-            });
-
-            const textarea = document.getElementById("edit-ar-text");
-            const errorDiv = document.getElementById("modal-error");
-            const previewDiv = document.getElementById("edit-ar-preview");
-
-            const updatePreview = () => {
-                previewDiv.innerHTML = sanitizeText(textarea.value).replace(
-                    /\n/g,
-                    "<br>",
-                );
-            };
-            textarea.addEventListener("input", updatePreview);
-            textarea.addEventListener("click", updatePreview);
-
-            overlay
-                .querySelectorAll(".format-btn")
-                .forEach((btn) =>
-                    btn.addEventListener("click", () =>
-                        insertTag(textarea, btn.dataset.tag),
-                    ),
-                );
             setTimeout(() => textarea.focus(), 100);
-
-            document
-                .getElementById("modal-edit-cancel")
-                .addEventListener("click", () => overlay.remove());
-            document
-                .getElementById("modal-edit-save")
-                .addEventListener("click", () => {
-                    const text = textarea.value.trim();
-                    if (text.length < 1) {
-                        errorDiv.textContent = "Минимум 1 символ";
-                        return;
-                    }
-                    if (text.length > CONSTANTS.AR_MAX_LENGTH) {
-                        errorDiv.textContent = `Максимум ${CONSTANTS.AR_MAX_LENGTH} символов`;
-                        return;
-                    }
-                    ar.text = sanitizeText(text);
-                    overlay.remove();
-                    renderAll();
-                    showNotification("Сохранено", "success");
-                });
-
-            textarea.addEventListener("keydown", (e) => {
-                if (e.key === "Escape") overlay.remove();
-                if (e.key === "Enter" && e.ctrlKey)
-                    document.getElementById("modal-edit-save").click();
-            });
-            overlay.addEventListener("click", (e) => {
-                if (e.target === overlay) overlay.remove();
-            });
         };
 
-        const showAddRCModal = () => {
-            const overlay = createModal({
-                html: `
-                        <div class="modal">
-                            <div class="modal-header"><i class="fas fa-cog"></i> Профиль</div>
-                            <div class="modal-body">
-                                <label class="form-label">Ключ (макс ${CONSTANTS.RC_KEY_MAX} символов)</label>
-                                <input type="text" class="form-input" id="new-rc-key" maxlength="${CONSTANTS.RC_KEY_MAX}" placeholder="Название">
-                                <label class="form-label modal-margin-top">Мин. позиция</label>
-                                <input type="number" class="form-input" id="new-rc-min-pos" value="0" max="${CONSTANTS.POSITION_MAX}" placeholder="0-${CONSTANTS.POSITION_MAX}">
-                                <label class="form-label modal-margin-top">Интервалы</label>
-                                <div class="modal-intervals" id="new-rc-intervals">
-                                    <div class="modal-interval">
-                                        <input type="number" class="form-input" placeholder="От" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
-                                        <span class="sep">—</span>
-                                        <input type="number" class="form-input" placeholder="До" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
-                                    </div>
-                                </div>
-                                <button class="btn btn-sm" id="add-rc-interval-btn" style="margin-top: 8px; width: 100%;"><i class="fas fa-plus"></i> Интервал <span id="interval-count">(0/${CONSTANTS.MAX_INTERVALS})</span></button>
-                                <div class="modal-error" id="modal-rc-error"></div>
+        const showRCModal = () => {
+            const overlay = createModal(`
+                <div class="modal">
+                    <div class="modal-header"><i class="fas fa-cog"></i> Новый профиль</div>
+                    <div class="modal-body">
+                        <label class="form-label">Ключ (макс ${CONSTANTS.RC_KEY_MAX} символов)</label>
+                        <input type="text" class="form-input" id="new-rc-key" maxlength="${CONSTANTS.RC_KEY_MAX}" placeholder="Название">
+                        <label class="form-label margin-top">Мин. позиция</label>
+                        <input type="number" class="form-input" id="new-rc-min-pos" value="0" max="${CONSTANTS.POSITION_MAX}">
+                        <label class="form-label margin-top">Интервалы</label>
+                        <div class="modal-intervals" id="new-rc-intervals">
+                            <div class="modal-interval">
+                                <input type="number" class="form-input" placeholder="От" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
+                                <span class="sep">—</span>
+                                <input type="number" class="form-input" placeholder="До" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
                             </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-sm" id="modal-rc-cancel">Отмена</button>
-                                <button class="btn btn-success btn-sm" id="modal-rc-add"><i class="fas fa-check"></i> Создать</button>
-                            </div>
-                        </div>`,
-            });
+                        </div>
+                        <button class="btn btn-sm" id="add-interval-btn" style="margin-top: 8px; width: 100%;">
+                            <i class="fas fa-plus"></i> Интервал <span id="interval-count">(1/${CONSTANTS.MAX_INTERVALS})</span>
+                        </button>
+                        <div class="modal-error" id="modal-error"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-sm" id="modal-cancel">Отмена</button>
+                        <button class="btn btn-success btn-sm" id="modal-save"><i class="fas fa-check"></i> Создать</button>
+                    </div>
+                </div>`);
 
             const keyInput = document.getElementById("new-rc-key");
             const minPosInput = document.getElementById("new-rc-min-pos");
-            const errorDiv = document.getElementById("modal-rc-error");
-            const intervalsContainer =
-                document.getElementById("new-rc-intervals");
+            const errorDiv = document.getElementById("modal-error");
+            const intervalsContainer = document.getElementById("new-rc-intervals");
+            const countSpan = document.getElementById("interval-count");
 
-            setTimeout(() => keyInput.focus(), 100);
-
-            const addInterval = () => {
-                const count =
-                    intervalsContainer.querySelectorAll(
-                        ".modal-interval",
-                    ).length;
-                if (count >= CONSTANTS.MAX_INTERVALS) {
-                    errorDiv.textContent = `Максимум ${CONSTANTS.MAX_INTERVALS} интервалов`;
-                    return;
-                }
-                const div = document.createElement("div");
-                div.className = "modal-interval";
-                div.innerHTML = `<input type="number" class="form-input" placeholder="От" value="0"><span class="sep">—</span><input type="number" class="form-input" placeholder="До" value="0"><button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>`;
-                intervalsContainer.appendChild(div);
-                document.getElementById("interval-count").textContent =
-                    `(${intervalsContainer.querySelectorAll(".modal-interval").length}/${CONSTANTS.MAX_INTERVALS})`;
-                const addBtn = document.getElementById("add-rc-interval-btn");
-                if (
-                    intervalsContainer.querySelectorAll(".modal-interval")
-                        .length >= CONSTANTS.MAX_INTERVALS
-                ) {
-                    addBtn.disabled = true;
-                    errorDiv.textContent = `Максимум ${CONSTANTS.MAX_INTERVALS} интервалов`;
-                }
-                div.querySelector(".btn-danger").addEventListener(
-                    "click",
-                    () => {
-                        div.remove();
-                        document.getElementById("interval-count").textContent =
-                            `(${intervalsContainer.querySelectorAll(".modal-interval").length}/${CONSTANTS.MAX_INTERVALS})`;
-                        document.getElementById(
-                            "add-rc-interval-btn",
-                        ).disabled = false;
-                        errorDiv.textContent = "";
-                    },
-                );
+            const updateCount = () => {
+                const count = intervalsContainer.querySelectorAll(".modal-interval").length;
+                countSpan.textContent = `(${count}/${CONSTANTS.MAX_INTERVALS})`;
+                document.getElementById("add-interval-btn").disabled = count >= CONSTANTS.MAX_INTERVALS;
             };
 
-            const getIntervals = () =>
-                Array.from(
-                    intervalsContainer.querySelectorAll(".modal-interval"),
-                ).map((div) => [
-                    parseInt(div.querySelectorAll("input")[0].value) || 0,
-                    parseInt(div.querySelectorAll("input")[1].value) || 0,
-                ]);
-
-            document
-                .getElementById("modal-rc-cancel")
-                .addEventListener("click", () => overlay.remove());
-            document
-                .getElementById("modal-rc-add")
-                .addEventListener("click", () => {
-                    const key = keyInput.value.trim();
-                    if (!key) {
-                        errorDiv.textContent = "Введите ключ";
-                        return;
-                    }
-                    if (key.length > CONSTANTS.RC_KEY_MAX) {
-                        errorDiv.textContent = `Макс ${CONSTANTS.RC_KEY_MAX} символов`;
-                        return;
-                    }
-                    if (rc[key]) {
-                        errorDiv.textContent = "Уже существует";
-                        return;
-                    }
-                    rc[key] = [
-                        parseInt(minPosInput.value) || 0,
-                        getIntervals(),
-                    ];
-                    overlay.remove();
-                    renderRCSettings();
-                    if (selectedItemIndex !== -1) renderItemSettings();
-                    showNotification("Создан", "success");
+            const addInterval = () => {
+                const count = intervalsContainer.querySelectorAll(".modal-interval").length;
+                if (count >= CONSTANTS.MAX_INTERVALS) return;
+                
+                const div = document.createElement("div");
+                div.className = "modal-interval";
+                div.innerHTML = `
+                    <input type="number" class="form-input" placeholder="От" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
+                    <span class="sep">—</span>
+                    <input type="number" class="form-input" placeholder="До" value="0" max="${CONSTANTS.INTERVAL_MAX}" min="0">
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>`;
+                
+                div.querySelector(".btn-danger").addEventListener("click", () => {
+                    div.remove();
+                    updateCount();
                 });
-            document
-                .getElementById("add-rc-interval-btn")
-                .addEventListener("click", addInterval);
+                
+                intervalsContainer.appendChild(div);
+                updateCount();
+            };
+
+            const getIntervals = () => Array.from(intervalsContainer.querySelectorAll(".modal-interval")).map(div => [
+                parseInt(div.querySelectorAll("input")[0].value) || 0,
+                parseInt(div.querySelectorAll("input")[1].value) || 0
+            ]);
+
+            const save = () => {
+                const key = keyInput.value.trim();
+                if (!key) { errorDiv.textContent = "Введите ключ"; return; }
+                if (key.length > CONSTANTS.RC_KEY_MAX) { errorDiv.textContent = `Макс ${CONSTANTS.RC_KEY_MAX} символов`; return; }
+                if (state.rc[key]) { errorDiv.textContent = "Уже существует"; return; }
+
+                state.rc[key] = [parseInt(minPosInput.value) || 0, getIntervals()];
+                overlay.remove();
+                renderAll();
+                showNotification("Профиль создан", "success");
+            };
+
+            document.getElementById("modal-cancel").addEventListener("click", () => overlay.remove());
+            document.getElementById("modal-save").addEventListener("click", save);
+            document.getElementById("add-interval-btn").addEventListener("click", addInterval);
+            
             keyInput.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") overlay.remove();
-                if (e.key === "Enter")
-                    document.getElementById("modal-rc-add").click();
+                if (e.key === "Enter") save();
             });
+            
             overlay.addEventListener("click", (e) => {
                 if (e.target === overlay) overlay.remove();
             });
-            intervalsContainer.querySelectorAll("input").forEach((input) =>
-                input.addEventListener("input", () => {
-                    const max = parseInt(input.max) || CONSTANTS.POSITION_MAX;
-                    if (parseInt(input.value) > max) input.value = max;
-                }),
-            );
-            minPosInput.addEventListener("input", () => {
-                if (parseInt(minPosInput.value) > CONSTANTS.POSITION_MAX)
-                    minPosInput.value = CONSTANTS.POSITION_MAX;
-            });
+
+            setTimeout(() => keyInput.focus(), 100);
         };
 
-        const showBulkEditModal = () => {
-            const overlay = createModal({
-                html: `
-                        <div class="modal">
-                            <div class="modal-header"><i class="fas fa-edit"></i> Bulk Edit</div>
-                            <div class="modal-body">
-                                <label class="form-label">Найти</label>
-                                <input type="text" class="form-input" id="bulk-find" placeholder="Подстрока для поиска...">
-                                <label class="form-label modal-margin-top">Заменить на</label>
-                                <input type="text" class="form-input" id="bulk-replace" placeholder="Текст для замены...">
-                                <div class="modal-bulk-preview" id="bulk-preview">
-                                    <div class="bulk-preview-empty">Начните вводить для предпросмотра</div>
-                                </div>
-                                <div class="bulk-preview-count" id="bulk-count"></div>
-                                <div class="modal-error" id="modal-bulk-error"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-sm" id="modal-bulk-cancel">Отмена</button>
-                                <button class="btn btn-success btn-sm" id="modal-bulk-apply" disabled><i class="fas fa-check"></i> Применить</button>
-                            </div>
-                        </div>`,
-            });
+        const showBulkModal = () => {
+            const overlay = createModal(`
+                <div class="modal">
+                    <div class="modal-header"><i class="fas fa-edit"></i> Bulk Edit</div>
+                    <div class="modal-body">
+                        <label class="form-label">Найти</label>
+                        <input type="text" class="form-input" id="bulk-find" placeholder="Подстрока для поиска...">
+                        <label class="form-label margin-top">Заменить на</label>
+                        <input type="text" class="form-input" id="bulk-replace" placeholder="Текст для замены...">
+                        <div class="modal-bulk-preview" id="bulk-preview">
+                            <div class="bulk-preview-empty">Начните вводить для предпросмотра</div>
+                        </div>
+                        <div class="bulk-preview-count" id="bulk-count"></div>
+                        <div class="modal-error" id="modal-error"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-sm" id="modal-cancel">Отмена</button>
+                        <button class="btn btn-success btn-sm" id="modal-apply" disabled><i class="fas fa-check"></i> Применить</button>
+                    </div>
+                </div>`);
 
             const findInput = document.getElementById("bulk-find");
             const replaceInput = document.getElementById("bulk-replace");
-            const previewContainer = document.getElementById("bulk-preview");
+            const previewDiv = document.getElementById("bulk-preview");
             const countDiv = document.getElementById("bulk-count");
-            const errorDiv = document.getElementById("modal-bulk-error");
-            const applyBtn = document.getElementById("modal-bulk-apply");
+            const errorDiv = document.getElementById("modal-error");
+            const applyBtn = document.getElementById("modal-apply");
+
+            const smartReplace = (match, replace) => {
+                if (match === match.toUpperCase()) return replace.toUpperCase();
+                if (match[0] === match[0].toUpperCase()) return replace.charAt(0).toUpperCase() + replace.slice(1).toLowerCase();
+                return replace.toLowerCase();
+            };
 
             const updatePreview = () => {
-                const findText = findInput.value;
-                const replaceText = replaceInput.value;
+                const find = findInput.value;
+                const replace = replaceInput.value;
 
-                if (!findText) {
-                    previewContainer.innerHTML =
-                        '<div class="bulk-preview-empty">Введите текст для поиска</div>';
+                if (!find) {
+                    previewDiv.innerHTML = '<div class="bulk-preview-empty">Введите текст для поиска</div>';
                     countDiv.textContent = "";
                     applyBtn.disabled = true;
                     return;
                 }
 
-                const escapedFindText = findText.replace(
-                    /[.*+?^${}()|[\]\\]/g,
-                    "\\$&",
-                );
-                const findRegex = new RegExp(`(${escapedFindText})`, "gi");
-                const affectedItems = itemsData.filter((item) =>
-                    item[1].toLowerCase().includes(findText.toLowerCase()),
-                );
+                const regex = new RegExp(`(${find.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+                const affected = state.items.filter(item => item[1].toLowerCase().includes(find.toLowerCase()));
 
-                if (affectedItems.length === 0) {
-                    previewContainer.innerHTML =
-                        '<div class="bulk-preview-empty">Совпадений не найдено</div>';
+                if (affected.length === 0) {
+                    previewDiv.innerHTML = '<div class="bulk-preview-empty">Совпадений не найдено</div>';
                     countDiv.textContent = "";
                     applyBtn.disabled = true;
                     return;
                 }
 
-                previewContainer.innerHTML = `
-                            <div class="bulk-preview-header">Предпросмотр (${affectedItems.length} товаров)</div>
-                            ${affectedItems
-                                .slice(0, 50)
-                                .map((item) => {
-                                    const oldName = item[1];
-                                    const replacedName = oldName.replace(
-                                        findRegex,
-                                        (match) => {
-                                            const lowerMatch =
-                                                match.toLowerCase();
-                                            const lowerReplace =
-                                                replaceText.toLowerCase();
-                                            if (match === match.toUpperCase()) {
-                                                return replaceText.toUpperCase();
-                                            } else if (
-                                                match[0] ===
-                                                match[0].toUpperCase()
-                                            ) {
-                                                return (
-                                                    replaceText
-                                                        .charAt(0)
-                                                        .toUpperCase() +
-                                                    replaceText
-                                                        .slice(1)
-                                                        .toLowerCase()
-                                                );
-                                            } else {
-                                                return lowerReplace;
-                                            }
-                                        },
-                                    );
-                                    const newName = oldName
-                                        .split(findRegex)
-                                        .map((part, i) =>
-                                            i % 2 === 1
-                                                ? `<span style="background: rgba(166, 227, 161, 0.3);">${part}</span>`
-                                                : part,
-                                        )
-                                        .join("");
-                                    return `
-                                <div class="bulk-preview-item">
-                                    <div class="bulk-preview-old">${oldName}</div>
-                                    <div class="bulk-preview-new">${replacedName}</div>
-                                </div>`;
-                                })
-                                .join("")}
-                            ${affectedItems.length > 50 ? `<div class="bulk-preview-empty">... и ещё ${affectedItems.length - 50}</div>` : ""}
-                        `;
+                previewDiv.innerHTML = `
+                    <div class="bulk-preview-header">Предпросмотр (${affected.length} товаров)</div>
+                    ${affected.slice(0, 50).map(item => {
+                        const oldName = item[1];
+                        const newName = oldName.replace(regex, (m) => smartReplace(m, replace));
+                        const highlighted = oldName.split(regex).map((part, i) => 
+                            i % 2 === 1 ? `<span style="background: rgba(76, 175, 80, 0.3);">${part}</span>` : part
+                        ).join("");
+                        return `<div class="bulk-preview-item"><div class="bulk-preview-old">${highlighted}</div><div class="bulk-preview-new">${newName}</div></div>`;
+                    }).join("")}
+                    ${affected.length > 50 ? `<div class="bulk-preview-empty">... и ещё ${affected.length - 50}</div>` : ""}`;
 
-                countDiv.textContent = `Будет изменено: ${affectedItems.length} товаров`;
+                countDiv.textContent = `Будет изменено: ${affected.length} товаров`;
                 applyBtn.disabled = false;
+            };
+
+            const apply = () => {
+                const find = findInput.value;
+                const replace = replaceInput.value;
+                if (!find) { errorDiv.textContent = "Введите текст для поиска"; return; }
+
+                const regex = new RegExp(`(${find.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+                let count = 0;
+                
+                state.items.forEach(item => {
+                    if (item[1].toLowerCase().includes(find.toLowerCase())) {
+                        item[1] = item[1].replace(regex, (m) => smartReplace(m, replace));
+                        count++;
+                    }
+                });
+
+                overlay.remove();
+                renderAll();
+                showNotification(`Изменено: ${count} товаров`, "success");
             };
 
             findInput.addEventListener("input", updatePreview);
             replaceInput.addEventListener("input", updatePreview);
-
-            setTimeout(() => findInput.focus(), 100);
-
-            document
-                .getElementById("modal-bulk-cancel")
-                .addEventListener("click", () => overlay.remove());
-
-            document
-                .getElementById("modal-bulk-apply")
-                .addEventListener("click", () => {
-                    const findText = findInput.value;
-                    const replaceText = replaceInput.value;
-
-                    if (!findText) {
-                        errorDiv.textContent = "Введите текст для поиска";
-                        return;
-                    }
-
-                    const escapedFindText = findText.replace(
-                        /[.*+?^${}()|[\]\\]/g,
-                        "\\$&",
-                    );
-                    const findRegex = new RegExp(`(${escapedFindText})`, "gi");
-
-                    let count = 0;
-                    itemsData.forEach((item) => {
-                        if (
-                            item[1]
-                                .toLowerCase()
-                                .includes(findText.toLowerCase())
-                        ) {
-                            item[1] = item[1].replace(findRegex, (match) => {
-                                const lowerMatch = match.toLowerCase();
-                                const lowerReplace = replaceText.toLowerCase();
-                                if (match === match.toUpperCase()) {
-                                    return replaceText.toUpperCase();
-                                } else if (
-                                    match[0] === match[0].toUpperCase()
-                                ) {
-                                    return (
-                                        replaceText.charAt(0).toUpperCase() +
-                                        replaceText.slice(1).toLowerCase()
-                                    );
-                                } else {
-                                    return lowerReplace;
-                                }
-                            });
-                            count++;
-                        }
-                    });
-
-                    overlay.remove();
-                    renderAll();
-                    if (selectedItemIndex !== -1) renderItemSettings();
-                    showNotification(
-                        `Переименовано: ${count} товаров`,
-                        "success",
-                    );
-                });
-
+            document.getElementById("modal-cancel").addEventListener("click", () => overlay.remove());
+            document.getElementById("modal-apply").addEventListener("click", apply);
+            
             findInput.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") overlay.remove();
-                if (e.key === "Enter" && !applyBtn.disabled)
-                    document.getElementById("modal-bulk-apply").click();
+                if (e.key === "Enter" && !applyBtn.disabled) apply();
             });
-
+            
             overlay.addEventListener("click", (e) => {
                 if (e.target === overlay) overlay.remove();
             });
+
+            setTimeout(() => findInput.focus(), 100);
         };
 
         const showInfoModal = () => {
-            const overlay = createModal({
-                html: `
-                        <div class="modal">
-                            <div class="modal-header"><i class="fas fa-info-circle"></i> Информация</div>
-                            <div class="modal-body"><p class="info-text"></p></div>
-                            <div class="modal-footer"><button class="btn btn-sm" id="modal-info-close">Закрыть</button></div>
-                        </div>`,
-            });
-            document
-                .getElementById("modal-info-close")
-                .addEventListener("click", () => overlay.remove());
+            const overlay = createModal(`
+                <div class="modal">
+                    <div class="modal-header"><i class="fas fa-info-circle"></i> Информация</div>
+                    <div class="modal-body"><p class="info-text">Редактор товаров для Telegram бота.</p></div>
+                    <div class="modal-footer"><button class="btn btn-sm" id="modal-close">Закрыть</button></div>
+                </div>`);
+            
+            document.getElementById("modal-close").addEventListener("click", () => overlay.remove());
             overlay.addEventListener("click", (e) => {
                 if (e.target === overlay) overlay.remove();
             });
         };
 
+        // Data Functions
         const exportData = () => {
             try {
-                const moduleNames = Object.keys(modules);
+                const moduleNames = Object.keys(state.modules);
                 const data = {
-                    ar: autoResponses.map((a) => a.text),
-                    rc,
-                    m: modules,
-                    i: itemsData.map((item) => {
-                        const moduleIndex = item[0];
-                        const moduleName =
-                            typeof moduleIndex === "string"
-                                ? moduleIndex
-                                : moduleNames[(moduleIndex || 1) - 1];
-                        return [
-                            moduleName,
-                            item[1],
-                            item[2],
-                            item[3],
-                            item[4],
-                            item[5],
-                        ];
-                    }),
+                    ar: state.autoResponses.map(a => a.text),
+                    rc: state.rc,
+                    m: state.modules,
+                    i: state.items.map(item => {
+                        const moduleName = typeof item[0] === "string" ? item[0] : moduleNames[(item[0] || 1) - 1];
+                        return [moduleName, item[1], item[2], item[3], item[4], item[5]];
+                    })
                 };
-                const compressed = brotli.compress(
-                    textEncoder.encode(JSON.stringify(data)),
-                    { quality: 11 },
-                );
-                navigator.clipboard
-                    .writeText(dataToBase64(compressed))
+                
+                const compressed = state.brotli.compress(encoder.encode(JSON.stringify(data)), { quality: 11 });
+                navigator.clipboard.writeText(dataToBase64(compressed))
                     .then(() => {
-                        showNotification("Скопировано!", "success");
+                        showNotification("Скопировано в буфер обмена!", "success");
                         setTimeout(() => window.Telegram.WebApp.close(), 3000);
                     })
-                    .catch(() =>
-                        showNotification("Ошибка копирования", "error"),
-                    );
-            } catch {
+                    .catch(() => showNotification("Ошибка копирования", "error"));
+            } catch (e) {
                 showNotification("Ошибка экспорта", "error");
             }
         };
 
-        const decodeParams = (text) =>
-            textDecoder.decode(brotli.decompress(base64ToData(text)));
-
         const loadData = async () => {
             try {
-                brotli = await import(
-                    "https://unpkg.com/brotli-wasm@3.0.0/index.web.js?module"
-                ).then((m) => m.default);
-
-                let dataParam = new URLSearchParams(window.location.search).get(
-                    "items",
-                );
-
+                state.brotli = await import("https://unpkg.com/brotli-wasm@3.0.0/index.web.js?module").then(m => m.default);
+                
+                let dataParam = new URLSearchParams(window.location.search).get("items");
+                
                 if (!dataParam) {
-                    const testParams =
-                        "items=G0gFACySt0F46sSMw4vmRP%2F094z0BvLGo8ZD%2BxSmiQaR7iFKh8uEV6fv9xAmHdAZsDY3zOvfHeiLj49gBFK0DC0twX%2F%2Fl5L%2B8%2Fhua8SzPV1bGTAJUIpF538vPUwsgHeAIS5a%2Fu9Yg7ppjElLqK%2FUVyvYWiA1LVWkKuA53gg6oeHSclZTxzH0E1Br55G3Fp9LEf8%2F49cqLloE3iS15pAsMEWGzxxLRDM5hBCrnZ%2FbQYtkezasQpBpuz4hl3YPWd1HTnoIbpjI2%2FT9eo4qsO6Qv5QzPXE93ebNKBhJCxHguNQpBh05K%2Fhg16IBXWlYwoMPv6ofod%2B1zFcmNk7AdEAkWU4QCvqhwdB%2FD%2FKO2qHkrJ%2FYHYbnb7sQGyrNIWhvCp7gEjgzCiWh07GytUQacY%2BwEbOMBN1c66WJxUVVf09tJ%2FYzkTyxbi3oqy46i7325%2F%2Bt89fSCdhRB0HAU5o8j3uh5Q3htyJagn1w0FyUy3IiwePtOijPpcA3OzIjPN7K5TARtuK1yK6PZl90J4RkmoCX5Vu9y4hZphxVZUolp%2F6GRDfYCc6ggzLEOws4N%2BCFbKwkYo7j053tlgPGEiOkZeJY9YeWFwjwxPZ35j6ugySVLyDU%2FvLaENCENLlCzuArr8Is%2FWNYAxCfXVWteD4ARwM6b%2FSjrVre1ph15PkwDI5Or2%2BzDC2X7d3DYikZOQUlFTUNLR3ZMZsNfGRBTHPPZbRVoRUoy4t81D9Byvj7ubkfR3t1DA4%3D";
+                    // Test data
+                    const testParams = "items=G0gFACySt0F46sSMw4vmRP%2F094z0BvLGo8ZD%2BxSmiQaR7iFKh8uEV6fv9xAmHdAZsDY3zOvfHeiLj49gBFK0DC0twX%2F%2Fl5L%2B8%2Fhua8SzPV1bGTAJUIpF538vPUwsgHeAIS5a%2Fu9Yg7ppjElLqK%2FUVyvYWiA1LVWkKuA53gg6oeHSclZTxzH0E1Br55G3Fp9LEf8%2F49cqLloE3iS15pAsMEWGzxxLRDM5hBCrnZ%2FbQYtkezasQpBpuz4hl3YPWd1HTnoIbpjI2%2FT9eo4qsO6Qv5QzPXE93ebNKBhJCxHguNQpBh05K%2Fhg16IBXWlYwoMPv6ofod%2B1zFcmNk7AdEAkWU4QCvqhwdB%2FD%2FKO2qHkrJ%2FYHYbnb7sQGyrNIWhvCp7gEjgzCiWh07GytUQacY%2BwEbOMBN1c66WJxUVVf09tJ%2FYzkTyxbi3oqy46i7325%2F%2Bt89fSCdhRB0HAU5o8j3uh5Q3htyJagn1w0FyUy3IiwePtOijPpcA3OzIjPN7K5TARtuK1yK6PZl90J4RkmoCX5Vu9y4hZphxVZUolp%2F6GRDfYCc6ggzLEOws4N%2BCFbKwkYo7j053tlgPGEiOkZeJY9YeWFwjwxPZ35j6ugySVLyDU%2FvLaENCENLlCzuArr8Is%2FWNYAxCfXVWteD4ARwM6b%2FSjrVre1ph15PkwDI5Or2%2BzDC2X7d3DYikZOQUlFTUNLR3ZMZsNfGRBTHPPZbRVoRUoy4t81D9Byvj7ubkfR3t1DA4%3D";
                     dataParam = new URLSearchParams(testParams).get("items");
                 }
 
-                const data = JSON.parse(decodeParams(dataParam));
+                const data = JSON.parse(decoder.decode(state.brotli.decompress(base64ToData(dataParam))));
+                
+                state.autoResponses = data.ar.map((text, index) => ({ id: index, text }));
+                state.modules = data.m || CONSTANTS.DEFAULT_MODULES;
 
-                autoResponses = data.ar.map((text, index) => ({
-                    id: index,
-                    text,
-                }));
-                modules = data.m || CONSTANTS.DEFAULT_MODULES;
+                // Ensure default ARs exist
+                const hasFirst = state.autoResponses.some(ar => ar.text === "Это First Message");
+                const hasLast = state.autoResponses.some(ar => ar.text === "Это Last Message");
+                
+                if (!hasFirst) {
+                    const newId = state.autoResponses.length > 0 ? Math.max(...state.autoResponses.map(a => a.id)) + 1 : 0;
+                    state.autoResponses.unshift({ id: newId, text: "Это First Message" });
+                }
+                if (!hasLast) {
+                    const newId = state.autoResponses.length > 0 ? Math.max(...state.autoResponses.map(a => a.id)) + 1 : 0;
+                    state.autoResponses.splice(1, 0, { id: newId, text: "Это Last Message" });
+                }
 
-                const ensureDefaultARs = () => {
-                    const firstMsgId = autoResponses.find(
-                        (ar) => ar.text === "Это First Message",
-                    )?.id;
-                    const lastMsgId = autoResponses.find(
-                        (ar) => ar.text === "Это Last Message",
-                    )?.id;
+                const firstId = state.autoResponses.find(ar => ar.text === "Это First Message")?.id;
+                const lastId = state.autoResponses.find(ar => ar.text === "Это Last Message")?.id;
 
-                    if (autoResponses.length === 0) {
-                        autoResponses = [
-                            { id: 0, text: "Это First Message" },
-                            { id: 1, text: "Это Last Message" },
-                        ];
-                        return [0, 1];
-                    }
-
-                    let newFirst = firstMsgId,
-                        newLast = lastMsgId;
-                    if (firstMsgId === undefined) {
-                        newFirst =
-                            Math.max(...autoResponses.map((a) => a.id)) + 1;
-                        autoResponses.unshift({
-                            id: newFirst,
-                            text: "Это First Message",
-                        });
-                    }
-                    if (lastMsgId === undefined) {
-                        newLast =
-                            Math.max(...autoResponses.map((a) => a.id)) + 1;
-                        autoResponses.splice(1, 0, {
-                            id: newLast,
-                            text: "Это Last Message",
-                        });
-                    }
-                    return [newFirst, newLast];
-                };
-
-                const [firstMsgId, lastMsgId] = ensureDefaultARs();
-
-                itemsData = data.i;
-                const moduleNames = Object.keys(modules);
-                itemsData.forEach((item) => {
-                    const moduleIndex = item[0];
-                    const moduleName = typeof moduleIndex === "string" ? moduleIndex : moduleNames[(moduleIndex || 1) - 1];
-                    item[0] = moduleName || moduleNames[0] || "Unknown";
-                    if (item[2].length < 2) {
-                        item[2].push(
-                            item[2].length === 0 ? firstMsgId : lastMsgId,
-                        );
-                    }
+                const moduleNames = Object.keys(state.modules);
+                state.items = data.i.map(item => {
+                    const moduleName = typeof item[0] === "string" ? item[0] : moduleNames[(item[0] || 1) - 1];
+                    return [
+                        moduleName || moduleNames[0] || "Unknown",
+                        item[1],
+                        item[2].length >= 2 ? item[2] : [firstId, lastId],
+                        item[3] || {},
+                        item[4] || 0,
+                        item[5] || "default"
+                    ];
                 });
 
-                rc = data.rc || {};
-                if (Object.keys(rc).length === 0)
-                    rc["default"] = [1000, [[9, 22]]];
+                state.rc = data.rc || {};
+                if (Object.keys(state.rc).length === 0) {
+                    state.rc["default"] = [1000, [[9, 22]]];
+                }
 
                 renderAll();
             } catch (error) {
-                console.error("Ошибка загрузки:", error);
+                console.error("Load error:", error);
                 showNotification("Ошибка загрузки данных", "error");
             }
         };
 
+        // Render Functions
         const renderAll = () => {
             renderItemsList();
             renderItemSettings();
             renderAutoResponses();
             renderRCSettings();
         };
-        const getFilteredItems = () =>
-            searchQuery
-                ? itemsData.filter((item) =>
-                      item[1].toLowerCase().includes(searchQuery.toLowerCase()),
-                  )
-                : itemsData;
+
+        const getFilteredItems = () => 
+            state.searchQuery 
+                ? state.items.filter(item => item[1].toLowerCase().includes(state.searchQuery.toLowerCase()))
+                : state.items;
 
         const renderItemsList = () => {
             const container = document.getElementById("items-list");
-            const filteredItems = getFilteredItems();
-            document.getElementById("items-count").textContent =
-                `(${itemsData.length})`;
+            const filtered = getFilteredItems();
+            document.getElementById("items-count").textContent = `(${state.items.length})`;
 
-            if (filteredItems.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>${searchQuery ? "Ничего не найдено" : "Нет товаров"}</p></div>`;
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>${state.searchQuery ? "Ничего не найдено" : "Нет товаров"}</p></div>`;
                 return;
             }
 
-            container.innerHTML = filteredItems
-                .map((item, idx) => {
-                    const originalIndex = itemsData.indexOf(item);
-                    return `<div class="item ${originalIndex === selectedItemIndex ? "selected" : ""}" data-index="${originalIndex}">
+            container.innerHTML = filtered.map(item => {
+                const idx = state.items.indexOf(item);
+                return `
+                    <div class="item ${idx === state.selectedIndex ? "selected" : ""}" data-index="${idx}">
                         <div class="item-name" title="${item[1]}">${item[1]}</div>
                         <div class="item-actions">
-                            <button class="btn btn-sm item-btn item-btn-copy" data-index="${originalIndex}" title="Копировать"><i class="fas fa-copy"></i></button>
-                            <button class="btn btn-sm item-btn item-btn-delete" data-index="${originalIndex}" title="Удалить"><i class="fas fa-times"></i></button>
+                            <button class="item-btn item-btn-copy" data-index="${idx}" title="Копировать"><i class="fas fa-copy"></i></button>
+                            <button class="item-btn item-btn-delete" data-index="${idx}" title="Удалить"><i class="fas fa-times"></i></button>
                         </div>
                     </div>`;
-                })
-                .join("");
+            }).join("");
 
-            container.querySelectorAll(".item").forEach((el) =>
+            container.querySelectorAll(".item").forEach(el => {
                 el.addEventListener("click", (e) => {
-                    if (!e.target.closest(".item-btn"))
-                        selectItem(parseInt(el.dataset.index));
-                }),
-            );
-            container.querySelectorAll(".item-btn-delete").forEach((btn) =>
+                    if (!e.target.closest(".item-btn")) selectItem(parseInt(el.dataset.index));
+                });
+            });
+
+            container.querySelectorAll(".item-btn-delete").forEach(btn => {
                 btn.addEventListener("click", (e) => {
                     e.stopPropagation();
-                    const index = parseInt(btn.dataset.index);
-                    if (
-                        confirmDelete
-                            ? confirm(`Удалить "${itemsData[index][1]}"?`)
-                            : true
-                    )
-                        deleteItem(index);
-                }),
-            );
-            container.querySelectorAll(".item-btn-copy").forEach((btn) =>
+                    const idx = parseInt(btn.dataset.index);
+                    if (state.confirmDelete ? confirm(`Удалить "${state.items[idx][1]}"?`) : true) {
+                        deleteItem(idx);
+                    }
+                });
+            });
+
+            container.querySelectorAll(".item-btn-copy").forEach(btn => {
                 btn.addEventListener("click", (e) => {
                     e.stopPropagation();
                     copyItem(parseInt(btn.dataset.index));
-                }),
-            );
+                });
+            });
         };
 
         const deleteItem = (index) => {
-            itemsData.splice(index, 1);
-            if (selectedItemIndex === index) selectedItemIndex = -1;
-            else if (selectedItemIndex > index) selectedItemIndex--;
+            state.items.splice(index, 1);
+            if (state.selectedIndex === index) state.selectedIndex = -1;
+            else if (state.selectedIndex > index) state.selectedIndex--;
             renderAll();
             showNotification("Товар удалён", "success");
         };
 
         const copyItem = (index) => {
-            const original = itemsData[index];
-            const copy = [
-                original[0],
-                original[1],
-                [...original[2]],
-                { ...original[3] },
-                original[4],
-                original[5],
-            ];
-            itemsData.splice(index + 1, 0, copy);
-            selectedItemIndex = index + 1;
+            const original = state.items[index];
+            const copy = [original[0], original[1], [...original[2]], { ...original[3] }, original[4], original[5]];
+            state.items.splice(index + 1, 0, copy);
+            state.selectedIndex = index + 1;
             renderAll();
             showNotification("Товар скопирован", "success");
         };
 
         const addItem = () => {
-            const firstMsgId =
-                autoResponses.length > 0 ? autoResponses[0]?.id : undefined;
-            const lastMsgId =
-                autoResponses.length > 1
-                    ? autoResponses[1]?.id
-                    : autoResponses.length > 0
-                      ? autoResponses[0]?.id
-                      : undefined;
-
-            const moduleNames = Object.keys(modules);
-            const defaultModule = moduleNames.includes("ItemReupload")
-                ? "ItemReupload"
-                : moduleNames[0] || "Unknown";
-
-            const newItem = [
-                defaultModule,
-                "Новый товар",
-                [firstMsgId, lastMsgId],
-                {},
-                0,
-                "default",
-            ];
-
-            itemsData.push(newItem);
-            selectedItemIndex = itemsData.length - 1;
+            const firstId = state.autoResponses[0]?.id;
+            const lastId = state.autoResponses[1]?.id ?? firstId;
+            const moduleNames = Object.keys(state.modules);
+            const defaultModule = moduleNames.includes("ItemReupload") ? "ItemReupload" : moduleNames[0] || "Unknown";
+            
+            state.items.push([defaultModule, "Новый товар", [firstId, lastId], {}, 0, "default"]);
+            state.selectedIndex = state.items.length - 1;
             renderAll();
             showNotification("Товар добавлен", "success");
         };
 
         const selectItem = (index) => {
-            selectedItemIndex = index;
+            state.selectedIndex = index;
             renderItemsList();
             renderItemSettings();
+            // Auto-scroll to center panel on mobile when item selected
+            if (isMobile()) {
+                setTimeout(() => scrollToPanel(1), 100);
+            }
         };
 
-        const getAROptions = (selectedId, limit = 40, filter = "") =>
-            autoResponses
-                .filter((ar) =>
-                    filter
-                        ? ar.text.toLowerCase().includes(filter.toLowerCase())
-                        : true,
-                )
-                .map(
-                    (ar) =>
-                        `<option value="${ar.id}" ${selectedId === ar.id ? "selected" : ""}>${ar.text.length > limit ? ar.text.substring(0, limit) + "..." : ar.text}</option>`,
-                )
-                .join("");
-
         const getModuleInfo = (item) => {
-            const moduleNames = Object.keys(modules);
-            const moduleName = item[0];
-            return modules.hasOwnProperty(moduleName)
-                ? { name: moduleName, ars: modules[moduleName] }
+            const moduleNames = Object.keys(state.modules);
+            return state.modules.hasOwnProperty(item[0]) 
+                ? { name: item[0], ars: state.modules[item[0]] }
                 : { name: moduleNames[0] || "Unknown", ars: [] };
         };
 
         const renderItemSettings = () => {
             const container = document.getElementById("item-settings");
-            if (selectedItemIndex === -1) {
+            
+            if (state.selectedIndex === -1) {
                 container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>Товар не выбран</h3><p>Выберите товар из списка</p></div>`;
                 return;
             }
 
-            const item = itemsData[selectedItemIndex];
-            const moduleNames = Object.keys(modules);
+            const item = state.items[state.selectedIndex];
+            const moduleNames = Object.keys(state.modules);
             const { name: moduleName, ars: moduleARs } = getModuleInfo(item);
-            const [firstMsgId, lastMsgId] = [item[2][0], item[2][1]];
+            const [firstId] = item[2];
 
             const renderARSelect = (label, arIndex, arName) => {
-                const currentValue = item[2][arIndex] ?? firstMsgId;
-                const currentAR = autoResponses.find(
-                    (a) => a.id === currentValue,
-                );
-                const displayText = currentAR ? currentAR.text : "";
+                const currentId = item[2][arIndex] ?? firstId;
+                const currentAR = state.autoResponses.find(a => a.id === currentId);
                 return `
-                        <div class="ar-fixed-item">
-                            <label class="form-label"><i class="fas fa-play"></i> ${arName}</label>
-                            <div class="ar-select-wrapper" data-ar-index="${arIndex}">
-                                <input type="text" class="form-input module-ar-select"
-                                    data-ar-index="${arIndex}"
-                                    value="${displayText}"
-                                    placeholder="Начните вводить для поиска..."
-                                    autocomplete="off">
-                                <div class="ar-select-dropdown" style="display: none;">
-                                    ${autoResponses
-                                        .map(
-                                            (ar) => `
-                                        <div class="ar-select-option" data-ar-id="${ar.id}">
-                                            ${ar.text.length > 100 ? ar.text.substring(0, 100) + "..." : ar.text}
-                                        </div>
-                                    `,
-                                        )
-                                        .join("")}
-                                </div>
+                    <div class="ar-fixed-item">
+                        <label class="form-label"><i class="fas fa-play"></i> ${arName}</label>
+                        <div class="ar-select-wrapper" data-ar-index="${arIndex}">
+                            <input type="text" class="form-input" value="${currentAR?.text || ""}" placeholder="Начните вводить для поиска..." autocomplete="off">
+                            <div class="ar-select-dropdown">
+                                ${state.autoResponses.map(ar => `
+                                    <div class="ar-select-option ${ar.id === currentId ? "selected" : ""}" data-ar-id="${ar.id}">
+                                        ${ar.text.length > 100 ? ar.text.substring(0, 100) + "..." : ar.text}
+                                    </div>
+                                `).join("")}
                             </div>
-                        </div>`;
+                        </div>
+                    </div>`;
             };
 
             container.innerHTML = `
-                    <div style="display: flex; flex-direction: column; height: 100%;">
-                        <div class="section section-auto">
-                            <div class="section-title"><i class="fas fa-cube"></i> Модуль</div>
-                            <select class="form-input" id="item-module">${moduleNames.map((key) => `<option value="${key}" ${moduleName === key ? "selected" : ""}>${key}</option>`).join("")}</select>
+                <div style="display: flex; flex-direction: column; height: 100%;">
+                    <div class="section section-auto">
+                        <div class="section-title"><i class="fas fa-cube"></i> Модуль</div>
+                        <select class="form-input" id="item-module">
+                            ${moduleNames.map(key => `<option value="${key}" ${moduleName === key ? "selected" : ""}>${key}</option>`).join("")}
+                        </select>
+                    </div>
+                    <div class="section section-auto section-pad-top">
+                        <div class="section-title"><i class="fas fa-tag"></i> Название</div>
+                        <input type="text" class="form-input" id="item-name" value="${item[1]}" maxlength="72" placeholder="Название товара">
+                        <p class="hint">Максимум 72 символа</p>
+                    </div>
+                    <div class="section section-stretch">
+                        <div class="section-title"><i class="fas fa-reply"></i> Авто ответы</div>
+                        <div class="ar-fixed-section">
+                            ${renderARSelect("First Message", 0, "First Message")}
+                            ${renderARSelect("Last Message", 1, "Last Message")}
+                            ${moduleARs.map((arName, idx) => renderARSelect(arName, idx + 2, arName)).join("")}
                         </div>
-                        <div class="section section-auto section-pad-top">
-                            <div class="section-title"><i class="fas fa-tag"></i> Название</div>
-                            <input type="text" class="form-input" id="item-name" value="${item[1]}" maxlength="72" placeholder="Название товара">
-                            <p class="hint">Максимум 72 символа</p>
-                        </div>
-                        <div class="section section-stretch">
-                            <div class="section-title"><i class="fas fa-reply"></i> Авто ответы</div>
-                            <div class="ar-fixed-section">
-                                ${renderARSelect("First Message", 0, "First Message")}
-                                ${renderARSelect("Last Message", 1, "Last Message")}
-                                ${moduleARs.map((arName, idx) => renderARSelect(arName, idx + 2, arName)).join("")}
-                            </div>
-                        </div>
-                        <div class="section section-auto section-pad-top">
-                            <div class="bump-toggle-section">
-                                <div class="bump-toggle-header">
-                                    <div class="bump-toggle-title"><i class="fas fa-rocket"></i> Авто поднятие</div>
-                                    <div class="bump-status ${item[4] ? "on" : "off"}" id="bump-status">
-                                        <div class="bump-status-dot"></div>${item[4] ? "Включено" : "Выключено"}
-                                    </div>
+                    </div>
+                    <div class="section section-auto section-pad-top">
+                        <div class="bump-toggle-section">
+                            <div class="bump-toggle-header">
+                                <div class="bump-toggle-title"><i class="fas fa-rocket"></i> Авто поднятие</div>
+                                <div class="bump-status ${item[4] ? "on" : "off"}">
+                                    <div class="bump-status-dot"></div>${item[4] ? "Включено" : "Выключено"}
                                 </div>
-                                <button class="btn ${item[4] ? "btn-success" : ""}" id="auto-bump-toggle" style="width: 100%;">
-                                    <i class="fas fa-power-off"></i> ${item[4] ? "Авто поднятие включено" : "Включить авто поднятие"}
-                                </button>
                             </div>
-                            <label class="form-label">Профиль</label>
-                            <select class="form-select" id="auto-bump-key">${Object.keys(
-                                rc,
-                            )
-                                .map(
-                                    (key) =>
-                                        `<option value="${key}" ${item[5] === key ? "selected" : ""}>${key}</option>`,
-                                )
-                                .join("")}</select>
-                            ${item[5] && rc[item[5]] ? `<div class="rc-preview"><div class="rc-preview-title">Настройки профиля</div><div class="rc-preview-row">Мин. позиция: <span>${rc[item[5]][0]}</span></div><div class="rc-preview-intervals">${rc[item[5]][1].map((interval) => `<div class="rc-preview-interval"><i class="fas fa-circle"></i>${interval[0]} — ${interval[1]}</div>`).join("")}</div></div>` : ""}
+                            <button class="btn ${item[4] ? "btn-success" : ""}" id="auto-bump-toggle" style="width: 100%;">
+                                <i class="fas fa-power-off"></i> ${item[4] ? "Авто поднятие включено" : "Включить авто поднятие"}
+                            </button>
                         </div>
-                    </div>`;
+                        <label class="form-label">Профиль</label>
+                        <select class="form-select" id="auto-bump-key">
+                            ${Object.keys(state.rc).map(key => `<option value="${key}" ${item[5] === key ? "selected" : ""}>${key}</option>`).join("")}
+                        </select>
+                        ${item[5] && state.rc[item[5]] ? `
+                            <div class="rc-preview">
+                                <div class="rc-preview-title">Настройки профиля</div>
+                                <div class="rc-preview-row">Мин. позиция: <span>${state.rc[item[5]][0]}</span></div>
+                                <div class="rc-preview-intervals">
+                                    ${state.rc[item[5]][1].map(interval => `
+                                        <div class="rc-preview-interval"><i class="fas fa-circle"></i>${interval[0]} — ${interval[1]}</div>
+                                    `).join("")}
+                                </div>
+                            </div>
+                        ` : ""}
+                    </div>
+                </div>`;
 
-            setupItemEventListeners();
-        };
+            // Event listeners
+            document.getElementById("item-name").addEventListener("input", (e) => {
+                item[1] = e.target.value;
+                renderItemsList();
+            });
 
-        const setupItemEventListeners = () => {
-            const item = itemsData[selectedItemIndex];
-            document
-                .getElementById("item-name")
-                .addEventListener("input", (e) => {
-                    item[1] = e.target.value;
-                    renderItemsList();
-                });
-            document
-                .getElementById("item-module")
-                .addEventListener("change", (e) => {
-                    item[0] = e.target.value;
-                    renderItemSettings();
-                });
-            document
-                .getElementById("auto-bump-toggle")
-                .addEventListener("click", function () {
-                    item[4] = item[4] ? 0 : 1;
-                    this.classList.toggle("btn-success");
-                    this.innerHTML = `<i class="fas fa-power-off"></i> ${item[4] ? "Авто поднятие включено" : "Включить авто поднятие"}`;
-                    const status = document.getElementById("bump-status");
-                    status.className = `bump-status ${item[4] ? "on" : "off"}`;
-                    status.innerHTML = `<div class="bump-status-dot"></div>${item[4] ? "Включено" : "Выключено"}`;
-                    renderItemsList();
-                });
-            document
-                .getElementById("auto-bump-key")
-                .addEventListener("change", (e) => {
-                    item[5] = e.target.value;
-                    renderItemSettings();
-                });
+            document.getElementById("item-module").addEventListener("change", (e) => {
+                item[0] = e.target.value;
+                renderItemSettings();
+            });
 
-            document
-                .querySelectorAll(".ar-select-wrapper")
-                .forEach((wrapper) => {
-                    const input = wrapper.querySelector("input");
-                    const dropdown = wrapper.querySelector(
-                        ".ar-select-dropdown",
-                    );
-                    const arIndex = parseInt(input.dataset.arIndex);
+            document.getElementById("auto-bump-toggle").addEventListener("click", function() {
+                item[4] = item[4] ? 0 : 1;
+                renderItemSettings();
+                renderItemsList();
+            });
 
-                    const updateDropdown = (filter = "") => {
-                        const options =
-                            dropdown.querySelectorAll(".ar-select-option");
-                        options.forEach((opt) => {
-                            const arId = parseInt(opt.dataset.arId);
-                            const ar = autoResponses.find((a) => a.id === arId);
-                            if (
-                                ar &&
-                                ar.text
-                                    .toLowerCase()
-                                    .includes(filter.toLowerCase())
-                            ) {
-                                opt.style.display = "";
-                                if (arId === (item[2][arIndex] ?? firstMsgId)) {
-                                    opt.classList.add("selected");
-                                } else {
-                                    opt.classList.remove("selected");
-                                }
-                            } else {
-                                opt.style.display = "none";
-                                opt.classList.remove("selected");
-                            }
-                        });
-                    };
+            document.getElementById("auto-bump-key").addEventListener("change", (e) => {
+                item[5] = e.target.value;
+                renderItemSettings();
+            });
 
-                    const positionDropdown = () => {
-                        const rect = input.getBoundingClientRect();
-                        dropdown.style.left = rect.left + "px";
-                        dropdown.style.top = rect.bottom + 4 + "px";
-                        dropdown.style.width =
-                            Math.min(
-                                rect.width,
-                                window.innerWidth - rect.left - 20,
-                            ) + "px";
-                    };
+            // AR Select dropdowns
+            container.querySelectorAll(".ar-select-wrapper").forEach(wrapper => {
+                const input = wrapper.querySelector("input");
+                const dropdown = wrapper.querySelector(".ar-select-dropdown");
+                const arIndex = parseInt(wrapper.dataset.arIndex);
 
-                    input.addEventListener("focus", () => {
-                        positionDropdown();
-                        dropdown.style.display = "block";
-                        updateDropdown(input.value);
+                const positionDropdown = () => {
+                    const rect = input.getBoundingClientRect();
+                    dropdown.style.left = rect.left + "px";
+                    dropdown.style.top = rect.bottom + 4 + "px";
+                    dropdown.style.width = Math.min(rect.width, window.innerWidth - rect.left - 20) + "px";
+                };
+
+                const filterOptions = (filter = "") => {
+                    dropdown.querySelectorAll(".ar-select-option").forEach(opt => {
+                        const arId = parseInt(opt.dataset.arId);
+                        const ar = state.autoResponses.find(a => a.id === arId);
+                        const matches = ar && ar.text.toLowerCase().includes(filter.toLowerCase());
+                        opt.style.display = matches ? "" : "none";
+                        opt.classList.toggle("selected", arId === (item[2][arIndex] ?? firstId));
                     });
+                };
 
-                    input.addEventListener("input", () => {
-                        updateDropdown(input.value);
-                    });
+                input.addEventListener("focus", () => {
+                    positionDropdown();
+                    dropdown.style.display = "block";
+                    filterOptions(input.value);
+                });
 
-                    input.addEventListener("keydown", (e) => {
-                        if (e.key === "Escape") {
-                            dropdown.style.display = "none";
-                            input.blur();
-                        }
-                    });
+                input.addEventListener("input", () => filterOptions(input.value));
+                
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") {
+                        dropdown.style.display = "none";
+                        input.blur();
+                    }
+                });
 
-                    window.addEventListener("resize", positionDropdown);
-
-                    dropdown
-                        .querySelectorAll(".ar-select-option")
-                        .forEach((opt) => {
-                            opt.addEventListener("click", () => {
-                                const arId = parseInt(opt.dataset.arId);
-                                const ar = autoResponses.find(
-                                    (a) => a.id === arId,
-                                );
-                                if (ar) {
-                                    input.value = ar.text;
-                                    item[2][arIndex] = arId;
-                                    dropdown.style.display = "none";
-                                }
-                            });
-                        });
-
-                    document.addEventListener("click", (e) => {
-                        if (!wrapper.contains(e.target)) {
+                dropdown.querySelectorAll(".ar-select-option").forEach(opt => {
+                    opt.addEventListener("click", () => {
+                        const arId = parseInt(opt.dataset.arId);
+                        const ar = state.autoResponses.find(a => a.id === arId);
+                        if (ar) {
+                            input.value = ar.text;
+                            item[2][arIndex] = arId;
                             dropdown.style.display = "none";
                         }
                     });
                 });
+
+                document.addEventListener("click", (e) => {
+                    if (!wrapper.contains(e.target)) dropdown.style.display = "none";
+                });
+
+                window.addEventListener("resize", positionDropdown);
+            });
         };
 
         const renderAutoResponses = () => {
             const container = document.getElementById("auto-tab");
+            
             container.innerHTML = `
-                    <div class="section" style="margin-bottom: 12px;"><div class="section-title"><i class="fas fa-list"></i> Все (${autoResponses.length})</div><button class="btn btn-primary btn-block btn-sm" id="add-ar-btn"><i class="fas fa-plus"></i> Добавить</button></div>
-                    <div class="ar-list" style="flex: 1; min-height: 0;">${autoResponses.length > 0 ? autoResponses.map((ar) => `<div class="ar-item" data-ar-id="${ar.id}"><span class="ar-text" title="${ar.text}">${ar.text}</span><div class="ar-actions"><button class="ar-btn ar-edit-btn" data-ar-id="${ar.id}"><i class="fas fa-pencil-alt"></i></button><button class="ar-btn" data-ar-id="${ar.id}"><i class="fas fa-times"></i></button></div></div>`).join("") : '<div class="empty-state"><p>Нет авто ответов</p></div>'}</div>`;
+                <div class="section" style="margin-bottom: 12px;">
+                    <div class="section-title"><i class="fas fa-list"></i> Все (${state.autoResponses.length})</div>
+                    <button class="btn btn-primary btn-block btn-sm" id="add-ar-btn"><i class="fas fa-plus"></i> Добавить</button>
+                </div>
+                <div class="ar-list">
+                    ${state.autoResponses.length > 0 
+                        ? state.autoResponses.map(ar => `
+                            <div class="ar-item" data-ar-id="${ar.id}">
+                                <span class="ar-text" title="${ar.text}">${ar.text}</span>
+                                <div class="ar-actions">
+                                    <button class="ar-btn edit" data-ar-id="${ar.id}"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="ar-btn" data-ar-id="${ar.id}"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        `).join("")
+                        : '<div class="empty-state"><p>Нет авто ответов</p></div>'
+                    }
+                </div>`;
 
             requestAnimationFrame(() => {
-                container
-                    .querySelectorAll(".ar-edit-btn")
-                    .forEach((btn) =>
-                        btn.addEventListener("click", () =>
-                            showEditARModal(parseInt(btn.dataset.arId)),
-                        ),
-                    );
-                container
-                    .querySelectorAll(".ar-btn:not(.ar-edit-btn)")
-                    .forEach((btn) =>
-                        btn.addEventListener("click", () => {
-                            const id = parseInt(btn.dataset.arId);
-                            if (
-                                !confirmDelete ||
-                                confirm("Удалить авто ответ?")
-                            ) {
-                                autoResponses = autoResponses.filter(
-                                    (a) => a.id !== id,
-                                );
-                                itemsData.forEach((item) => {
-                                    item[2] = item[2].filter(
-                                        (arId) => arId !== id,
-                                    );
-                                });
-                                renderAll();
-                                showNotification("Удалён", "success");
-                            }
-                        }),
-                    );
-                document.getElementById("add-ar-btn").onclick = showAddARModal;
+                container.querySelectorAll(".ar-btn.edit").forEach(btn => {
+                    btn.addEventListener("click", () => showARModal(true, parseInt(btn.dataset.arId)));
+                });
+
+                container.querySelectorAll(".ar-btn:not(.edit)").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const id = parseInt(btn.dataset.arId);
+                        if (!state.confirmDelete || confirm("Удалить авто ответ?")) {
+                            state.autoResponses = state.autoResponses.filter(a => a.id !== id);
+                            state.items.forEach(item => {
+                                item[2] = item[2].filter(arId => arId !== id);
+                            });
+                            renderAll();
+                            showNotification("Удалён", "success");
+                        }
+                    });
+                });
+
+                document.getElementById("add-ar-btn").addEventListener("click", () => showARModal(false));
             });
         };
 
         const renderRCSettings = () => {
             const container = document.getElementById("rc-tab");
-            const rcKeys = Object.keys(rc);
+            const rcKeys = Object.keys(state.rc);
 
             container.innerHTML = `
-                    <div class="section" style="margin-bottom: 12px;"><div class="section-title"><i class="fas fa-chart-line"></i> Профили (${rcKeys.length})</div><button class="btn btn-primary btn-block btn-sm" id="add-rc-btn"><i class="fas fa-plus"></i> Создать</button></div>
-                    <div class="rc-list">${rcKeys.length > 0 ? rcKeys.map((key) => `<div class="rc-card" data-key="${key}"><div class="rc-card-header"><span class="rc-card-title"><i class="fas fa-sliders-h"></i> ${key}</span><button class="btn btn-sm btn-danger" data-key="${key}"><i class="fas fa-trash"></i></button></div><div class="rc-card-body"><label class="form-label">Мин. позиция</label><input type="number" class="form-input rc-min-pos" data-key="${key}" value="${rc[key][0]}" max="${CONSTANTS.POSITION_MAX}"><label class="form-label rc-margin-top">Интервалы</label><div class="rc-intervals" data-key="${key}">${rc[key][1].map((interval, idx) => `<div class="rc-row"><input type="number" class="rc-from" data-key="${key}" data-idx="${idx}" value="${interval[0]}" max="${CONSTANTS.INTERVAL_MAX}" min="0"><span class="sep">—</span><input type="number" class="rc-to" data-key="${key}" data-idx="${idx}" value="${interval[1]}" max="${CONSTANTS.INTERVAL_MAX}" min="0"><button class="btn btn-sm btn-danger" data-key="${key}" data-idx="${idx}"><i class="fas fa-times"></i></button></div>`).join("")}</div><button class="btn btn-sm" style="margin-top: 8px;" data-key="${key}" ${rc[key][1].length >= CONSTANTS.MAX_INTERVALS ? "disabled" : ""}><i class="fas fa-plus"></i> Интервал (${rc[key][1].length}/${CONSTANTS.MAX_INTERVALS})</button></div></div>`).join("") : '<div class="empty-state"><i class="fas fa-sliders-h"></i><p>Нет профилей</p></div>'}</div>`;
+                <div class="section" style="margin-bottom: 12px;">
+                    <div class="section-title"><i class="fas fa-chart-line"></i> Профили (${rcKeys.length})</div>
+                    <button class="btn btn-primary btn-block btn-sm" id="add-rc-btn"><i class="fas fa-plus"></i> Создать</button>
+                </div>
+                <div class="rc-list">
+                    ${rcKeys.length > 0 
+                        ? rcKeys.map(key => `
+                            <div class="rc-card" data-key="${key}">
+                                <div class="rc-card-header">
+                                    <span class="rc-card-title"><i class="fas fa-sliders-h"></i> ${key}</span>
+                                    <button class="btn btn-sm btn-danger" data-key="${key}"><i class="fas fa-trash"></i></button>
+                                </div>
+                                <div class="rc-card-body">
+                                    <label class="form-label">Мин. позиция</label>
+                                    <input type="number" class="form-input rc-min-pos" data-key="${key}" value="${state.rc[key][0]}" max="${CONSTANTS.POSITION_MAX}">
+                                    <label class="form-label margin-top">Интервалы</label>
+                                    <div class="rc-intervals" data-key="${key}">
+                                        ${state.rc[key][1].map((interval, idx) => `
+                                            <div class="rc-row">
+                                                <input type="number" class="rc-from" data-key="${key}" data-idx="${idx}" value="${interval[0]}" max="${CONSTANTS.INTERVAL_MAX}" min="0">
+                                                <span class="sep">—</span>
+                                                <input type="number" class="rc-to" data-key="${key}" data-idx="${idx}" value="${interval[1]}" max="${CONSTANTS.INTERVAL_MAX}" min="0">
+                                                <button class="btn btn-sm btn-danger" data-key="${key}" data-idx="${idx}"><i class="fas fa-times"></i></button>
+                                            </div>
+                                        `).join("")}
+                                    </div>
+                                    <button class="btn btn-sm" data-key="${key}" ${state.rc[key][1].length >= CONSTANTS.MAX_INTERVALS ? "disabled" : ""}>
+                                        <i class="fas fa-plus"></i> Интервал (${state.rc[key][1].length}/${CONSTANTS.MAX_INTERVALS})
+                                    </button>
+                                </div>
+                            </div>
+                        `).join("")
+                        : '<div class="empty-state"><i class="fas fa-sliders-h"></i><p>Нет профилей</p></div>'
+                    }
+                </div>`;
 
             requestAnimationFrame(() => {
-                container.querySelectorAll(".rc-min-pos").forEach((input) =>
+                container.querySelectorAll(".rc-min-pos").forEach(input => {
                     input.addEventListener("input", (e) => {
-                        rc[e.target.dataset.key][0] =
-                            parseInt(e.target.value) || 0;
-                    }),
-                );
-                container
-                    .querySelectorAll(".rc-from, .rc-to")
-                    .forEach((input) => {
-                        input.addEventListener("input", () => {
-                            const { key, idx } = input.dataset;
-                            let from =
-                                parseInt(
-                                    container.querySelector(
-                                        `.rc-from[data-key="${key}"][data-idx="${idx}"]`,
-                                    ).value,
-                                ) || 0;
-                            let to =
-                                parseInt(
-                                    container.querySelector(
-                                        `.rc-to[data-key="${key}"][data-idx="${idx}"]`,
-                                    ).value,
-                                ) || 0;
-                            if (from > CONSTANTS.INTERVAL_MAX)
-                                from = CONSTANTS.INTERVAL_MAX;
-                            if (to > CONSTANTS.INTERVAL_MAX)
-                                to = CONSTANTS.INTERVAL_MAX;
-                            if (to < from) to = from;
-                            container.querySelector(
-                                `.rc-from[data-key="${key}"][data-idx="${idx}"]`,
-                            ).value = from;
-                            container.querySelector(
-                                `.rc-to[data-key="${key}"][data-idx="${idx}"]`,
-                            ).value = to;
-                            rc[key][1][idx] = [from, to];
-                        });
+                        state.rc[e.target.dataset.key][0] = parseInt(e.target.value) || 0;
                     });
-                container
-                    .querySelectorAll(".btn-danger[data-idx]")
-                    .forEach((btn) =>
-                        btn.addEventListener("click", () => {
-                            const { key, idx } = btn.dataset;
-                            if (
-                                !confirmDelete ||
-                                confirm("Удалить интервал?")
-                            ) {
-                                rc[key][1].splice(idx, 1);
-                                renderRCSettings();
-                                if (selectedItemIndex !== -1)
-                                    renderItemSettings();
-                            }
-                        }),
-                    );
-                container
-                    .querySelectorAll(".btn[data-key]:not(.btn-danger)")
-                    .forEach((btn) =>
-                        btn.addEventListener("click", () => {
-                            const key = btn.dataset.key;
-                            if (rc[key][1].length >= CONSTANTS.MAX_INTERVALS) {
-                                showNotification(
-                                    `Максимум ${CONSTANTS.MAX_INTERVALS} интервалов`,
-                                    "error",
-                                );
-                                return;
-                            }
-                            rc[key][1].push([0, 0]);
+                });
+
+                container.querySelectorAll(".rc-from, .rc-to").forEach(input => {
+                    input.addEventListener("input", () => {
+                        const { key, idx } = input.dataset;
+                        const fromInput = container.querySelector(`.rc-from[data-key="${key}"][data-idx="${idx}"]`);
+                        const toInput = container.querySelector(`.rc-to[data-key="${key}"][data-idx="${idx}"]`);
+                        let from = parseInt(fromInput.value) || 0;
+                        let to = parseInt(toInput.value) || 0;
+                        
+                        if (from > CONSTANTS.INTERVAL_MAX) from = CONSTANTS.INTERVAL_MAX;
+                        if (to > CONSTANTS.INTERVAL_MAX) to = CONSTANTS.INTERVAL_MAX;
+                        if (to < from) to = from;
+                        
+                        fromInput.value = from;
+                        toInput.value = to;
+                        state.rc[key][1][idx] = [from, to];
+                    });
+                });
+
+                container.querySelectorAll(".btn-danger[data-idx]").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const { key, idx } = btn.dataset;
+                        if (!state.confirmDelete || confirm("Удалить интервал?")) {
+                            state.rc[key][1].splice(idx, 1);
                             renderRCSettings();
-                        }),
-                    );
-                container
-                    .querySelectorAll(".btn-danger[data-key]:not([data-idx])")
-                    .forEach((btn) =>
-                        btn.addEventListener("click", () => {
-                            const key = btn.dataset.key;
-                            if (
-                                !confirmDelete ||
-                                confirm(`Удалить "${key}"?`)
-                            ) {
-                                delete rc[key];
-                                itemsData.forEach((item) => {
-                                    if (item[5] === key) item[5] = "";
-                                });
-                                renderAll();
-                                showNotification("Удалён", "success");
-                            }
-                        }),
-                    );
-                document.getElementById("add-rc-btn").onclick = showAddRCModal;
+                            if (state.selectedIndex !== -1) renderItemSettings();
+                        }
+                    });
+                });
+
+                container.querySelectorAll(".btn[data-key]:not(.btn-danger)").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const key = btn.dataset.key;
+                        if (state.rc[key][1].length >= CONSTANTS.MAX_INTERVALS) {
+                            showNotification(`Максимум ${CONSTANTS.MAX_INTERVALS} интервалов`, "error");
+                            return;
+                        }
+                        state.rc[key][1].push([0, 0]);
+                        renderRCSettings();
+                    });
+                });
+
+                container.querySelectorAll(".btn-danger[data-key]:not([data-idx])").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const key = btn.dataset.key;
+                        if (!state.confirmDelete || confirm(`Удалить профиль "${key}"?`)) {
+                            delete state.rc[key];
+                            state.items.forEach(item => { if (item[5] === key) item[5] = ""; });
+                            renderAll();
+                            showNotification("Профиль удалён", "success");
+                        }
+                    });
+                });
+
+                document.getElementById("add-rc-btn").addEventListener("click", showRCModal);
             });
         };
 
+        // Event Listeners
         document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll(".tab").forEach((tab) =>
+            // Tabs
+            document.querySelectorAll(".tab").forEach(tab => {
                 tab.addEventListener("click", () => {
-                    document
-                        .querySelectorAll(".tab")
-                        .forEach((t) => t.classList.remove("active"));
-                    document
-                        .querySelectorAll(".tab-content")
-                        .forEach((c) => c.classList.remove("active"));
+                    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+                    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
                     tab.classList.add("active");
-                    document
-                        .getElementById(`${tab.dataset.tab}-tab`)
-                        .classList.add("active");
-                }),
-            );
-            document
-                .getElementById("export-btn")
-                .addEventListener("click", exportData);
-            document
-                .getElementById("info-btn")
-                .addEventListener("click", showInfoModal);
-            document
-                .getElementById("confirm-delete")
-                .addEventListener("change", (e) => {
-                    if (
-                        !e.target.checked &&
-                        !confirm("Отключить подтверждение удаления?")
-                    )
-                        e.target.checked = true;
-                    else confirmDelete = e.target.checked;
+                    document.getElementById(`${tab.dataset.tab}-tab`).classList.add("active");
                 });
-            document
-                .getElementById("search-input")
-                .addEventListener("input", (e) => {
-                    searchQuery = e.target.value.trim();
-                    renderItemsList();
-                });
-            document
-                .getElementById("add-item-btn")
-                .addEventListener("click", addItem);
-            document
-                .getElementById("bulk-edit-btn")
-                .addEventListener("click", showBulkEditModal);
+            });
+
+            // Main actions
+            document.getElementById("export-btn").addEventListener("click", exportData);
+            document.getElementById("info-btn").addEventListener("click", showInfoModal);
+            document.getElementById("add-item-btn").addEventListener("click", addItem);
+            document.getElementById("bulk-edit-btn").addEventListener("click", showBulkModal);
+            
+            document.getElementById("confirm-delete").addEventListener("change", (e) => {
+                if (!e.target.checked && !confirm("Отключить подтверждение удаления?")) {
+                    e.target.checked = true;
+                } else {
+                    state.confirmDelete = e.target.checked;
+                }
+            });
+
+            document.getElementById("search-input").addEventListener("input", (e) => {
+                state.searchQuery = e.target.value.trim();
+                renderItemsList();
+            });
+
+            // Mobile touch handling
+            const app = document.querySelector('.app');
+            app.addEventListener('touchstart', handleTouchStart, { passive: true });
+            app.addEventListener('touchend', handleTouchEnd, { passive: true });
+            
+            // Update current panel on scroll
+            app.addEventListener('scroll', () => {
+                if (!isMobile()) return;
+                const newPanel = getCurrentPanelFromScroll(app.scrollLeft);
+                if (newPanel !== state.currentPanel) {
+                    state.currentPanel = newPanel;
+                }
+            });
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                if (!isMobile()) {
+                    document.querySelector('.app').scrollLeft = 0;
+                }
+            });
+            
+            // Init Telegram
             window.Telegram.WebApp.ready();
-            loadData();
             window.Telegram.WebApp.enableClosingConfirmation();
+            
+            // Load data
+            loadData();
         });
     </script>
-    <body>
-        <div class="app">
-            <div class="panel left-panel">
-                <div class="panel-header">
-                    <h2 class="panel-title">
-                        <i class="fas fa-box"></i> Товары
-                        <span class="items-count" id="items-count">(0)</span>
-                    </h2>
-                </div>
-                <div class="panel-content">
-                    <button
-                        class="btn btn-primary btn-block btn-sm"
-                        id="add-item-btn"
-                        style="margin-bottom: 10px"
-                    >
-                        <i class="fas fa-plus"></i> Добавить товар
-                    </button>
-                    <button
-                        class="btn btn-block btn-sm"
-                        id="bulk-edit-btn"
-                        style="margin-bottom: 10px"
-                    >
-                        <i class="fas fa-edit"></i> Bulk Edit
-                    </button>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i
-                        ><input
-                            type="text"
-                            class="search-input"
-                            id="search-input"
-                            placeholder="Поиск..."
-                        />
-                    </div>
-                    <div class="item-list" id="items-list"></div>
-                </div>
-                <div class="panel-footer">
-                    <label class="toggle-row info-check-label"
-                        ><span>Подтверждать удаление</span
-                        ><input
-                            type="checkbox"
-                            id="confirm-delete"
-                            class="info-check-input"
-                            checked
-                    /></label>
-                    <div class="footer-actions">
-                        <button
-                            class="btn btn-primary footer-btn-info"
-                            id="info-btn"
-                            title="Информация"
-                        >
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                        <button
-                            class="btn btn-success footer-btn-export"
-                            id="export-btn"
-                        >
-                            <i class="fas fa-download"></i> Экспорт
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="panel center-panel">
-                <div class="panel-header">
-                    <h2 class="panel-title">
-                        <i class="fas fa-sliders-h"></i> Настройки
-                    </h2>
-                </div>
-                <div class="panel-content" id="item-settings"></div>
-            </div>
-            <div class="panel right-panel">
-                <div class="panel-header">
-                    <h2 class="panel-title">
-                        <i class="fas fa-cogs"></i> Настройки
-                    </h2>
-                </div>
-                <div class="tabs">
-                    <button class="tab active" data-tab="auto">
-                        <i class="fas fa-reply"></i><span>Авто-ответы</span>
-                    </button>
-                    <button class="tab" data-tab="rc">
-                        <i class="fas fa-rocket"></i><span>Авто-поднятие</span>
-                    </button>
-                </div>
-                <div class="tab-content active" id="auto-tab"></div>
-                <div class="tab-content" id="rc-tab"></div>
-            </div>
-        </div>
-    </body>
+</body>
 </html>
