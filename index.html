@@ -197,6 +197,7 @@
         .btn-sm {
             padding: 8px 10px;
             font-size: 12px;
+            margin-top: 4px;
         }
 
         .btn-block {
@@ -363,33 +364,6 @@
 
         .bump-toggle-title i {
             color: var(--subtitle);
-        }
-
-        .bump-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: var(--radius-sm);
-            font-weight: 500;
-        }
-
-        .bump-status.off {
-            background: var(--separator);
-            color: var(--hint);
-        }
-
-        .bump-status.on {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4caf50;
-        }
-
-        .bump-status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: currentColor;
         }
 
         /* Auto Responses */
@@ -1194,6 +1168,9 @@
                 scroll-snap-align: start;
                 scroll-snap-stop: always;
                 overflow: hidden;
+                background: var(--bg);
+                position: relative;
+                z-index: 1;
             }
             
             /* Right panel: 85% width, shows hint of center panel */
@@ -2069,9 +2046,6 @@ https://plrk.co/p/ea_redeem`,
                         <div class="bump-toggle-section">
                             <div class="bump-toggle-header">
                                 <div class="bump-toggle-title"><i class="fas fa-rocket"></i> Авто поднятие</div>
-                                <div class="bump-status ${item[4] ? "on" : "off"}">
-                                    <div class="bump-status-dot"></div>${item[4] ? "Включено" : "Выключено"}
-                                </div>
                             </div>
                             <button class="btn ${item[4] ? "btn-success" : ""}" id="auto-bump-toggle" style="width: 100%;">
                                 <i class="fas fa-power-off"></i> ${item[4] ? "Авто поднятие включено" : "Включить авто поднятие"}
