@@ -1309,6 +1309,17 @@
         // Constants
         const CONSTANTS = {
             DEFAULT_MODULES: { ItemReupload: [] },
+            MODULE_NAMES: {
+                "ItemReupload": "Перевыставление товаров",
+                "SteamTopup": "Авто стим",
+                "TelegramStars": "Авто stars",
+                "TelegramPremium": "Авто premium",
+                "RobloxGamepass": "Авто robux",
+                "FreeFireTopup": "Авто FreeFire",
+                "PubgTopup": "Авто PUBG Mobile",
+                "Promocode": "Перевыставление кодов",
+                "Account": "Перевыставление аккаунтов"
+            },
             WORKING_LINKS: `https://plrk.co/p/roblox_login
 https://plrk.co/p/roblox_creations
 https://plrk.co/p/roblox_transactions
@@ -1341,7 +1352,19 @@ https://plrk.co/p/ea_redeem`,
             brotli: null,
             confirmDelete: true,
             searchQuery: "",
-            currentPanel: 0 // 0 = left, 1 = center, 2 = right
+            currentPanel: 0, // 0 = left, 1 = center, 2 = right
+            nextARId: 0,
+            eventCleanups: []
+        };
+
+        const cleanupEvents = () => {
+            state.eventCleanups.forEach(cleanup => cleanup());
+            state.eventCleanups = [];
+        };
+
+        const addTrackedListener = (element, event, handler) => {
+            element.addEventListener(event, handler);
+            state.eventCleanups.push(() => element.removeEventListener(event, handler));
         };
 
         const encoder = new TextEncoder();
@@ -1386,23 +1409,29 @@ https://plrk.co/p/ea_redeem`,
         
         // Touch handling for swipe
         let touchStartX = 0;
+        let touchStartY = 0;
         let touchEndX = 0;
+        let touchEndY = 0;
         
         const handleTouchStart = (e) => {
             touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
         };
         
         const handleTouchEnd = (e) => {
             if (!isMobile()) return;
             touchEndX = e.changedTouches[0].screenX;
-            const diff = touchStartX - touchEndX;
+            touchEndY = e.changedTouches[0].screenY;
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
             const threshold = 80; // Увеличенный порог для более точного свайпа
             
-            if (Math.abs(diff) > threshold) {
-                if (diff > 0 && state.currentPanel < 2) {
+            // Проверяем, что горизонтальное движение больше вертикального
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
+                if (diffX > 0 && state.currentPanel < 2) {
                     // Swipe left - next panel
                     scrollToPanel(state.currentPanel + 1);
-                } else if (diff < 0 && state.currentPanel > 0) {
+                } else if (diffX < 0 && state.currentPanel > 0) {
                     // Swipe right - previous panel
                     scrollToPanel(state.currentPanel - 1);
                 }
@@ -1420,14 +1449,23 @@ https://plrk.co/p/ea_redeem`,
             return 2; // В правой панели
         };
 
+        let notificationTimeout = null;
+
         const showNotification = (message, type = "info") => {
             document.querySelector(".notification")?.remove();
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+                notificationTimeout = null;
+            }
             const notification = document.createElement("div");
             notification.className = `notification ${type}`;
             const icons = { error: "fa-exclamation-circle", success: "fa-check-circle", info: "fa-info-circle" };
             notification.innerHTML = `<i class="fas ${icons[type]}"></i><span>${message}</span>`;
             document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 2500);
+            notificationTimeout = setTimeout(() => {
+                notification.remove();
+                notificationTimeout = null;
+            }, 2500);
         };
 
         const sanitizeHTML = (html) => {
@@ -1480,6 +1518,7 @@ https://plrk.co/p/ea_redeem`,
             textarea.selectionStart = newStart;
             textarea.selectionEnd = newEnd;
             textarea.focus();
+            textarea.dispatchEvent(new Event('input'));
         };
 
         const createModal = (html) => {
@@ -1544,6 +1583,7 @@ https://plrk.co/p/ea_redeem`,
             };
 
             textarea.addEventListener("input", updatePreview);
+            updatePreview();
             overlay.querySelectorAll(".format-btn").forEach(btn => {
                 btn.addEventListener("click", () => insertTag(textarea, btn.dataset.tag));
             });
@@ -1562,8 +1602,7 @@ https://plrk.co/p/ea_redeem`,
                 if (isEdit) {
                     ar.text = sanitizeHTML(text);
                 } else {
-                    const newId = state.autoResponses.length > 0 ? Math.max(...state.autoResponses.map(a => a.id)) + 1 : 0;
-                    state.autoResponses.push({ id: newId, text: sanitizeHTML(text) });
+                    state.autoResponses.push({ id: state.nextARId++, text: sanitizeHTML(text) });
                 }
                 
                 overlay.remove();
@@ -1733,15 +1772,17 @@ https://plrk.co/p/ea_redeem`,
                     return;
                 }
 
+                const escapeHTML = (str) => str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                
                 previewDiv.innerHTML = `
                     <div class="bulk-preview-header">Предпросмотр (${affected.length} товаров)</div>
                     ${affected.slice(0, 50).map(item => {
                         const oldName = item[1];
                         const newName = oldName.replace(regex, (m) => smartReplace(m, replace));
-                        const highlighted = oldName.split(regex).map((part, i) => 
-                            i % 2 === 1 ? `<span style="background: rgba(76, 175, 80, 0.3);">${part}</span>` : part
+                        const highlighted = escapeHTML(oldName).split(regex).map((part, i) => 
+                            i % 2 === 1 ? `<span style="background: rgba(76, 175, 80, 0.3);">${escapeHTML(part)}</span>` : part
                         ).join("");
-                        return `<div class="bulk-preview-item"><div class="bulk-preview-old">${highlighted}</div><div class="bulk-preview-new">${newName}</div></div>`;
+                        return `<div class="bulk-preview-item"><div class="bulk-preview-old">${highlighted}</div><div class="bulk-preview-new">${escapeHTML(newName)}</div></div>`;
                     }).join("")}
                     ${affected.length > 50 ? `<div class="bulk-preview-empty">... и ещё ${affected.length - 50}</div>` : ""}`;
 
@@ -1828,7 +1869,13 @@ https://plrk.co/p/ea_redeem`,
 
         const loadData = async () => {
             try {
-                state.brotli = await import("https://unpkg.com/brotli-wasm@3.0.0/index.web.js?module").then(m => m.default);
+                try {
+                    state.brotli = await import("https://unpkg.com/brotli-wasm@3.0.0/index.web.js?module").then(m => m.default);
+                } catch (importError) {
+                    showNotification("Ошибка загрузки brotli-wasm. Проверьте подключение к интернету.", "error");
+                    console.error("Brotli import error:", importError);
+                    return;
+                }
                 
                 let dataParam = new URLSearchParams(window.location.search).get("items");
                 
@@ -1841,6 +1888,7 @@ https://plrk.co/p/ea_redeem`,
                 const data = JSON.parse(decoder.decode(state.brotli.decompress(base64ToData(dataParam))));
                 
                 state.autoResponses = data.ar.map((text, index) => ({ id: index, text }));
+                state.nextARId = state.autoResponses.length > 0 ? Math.max(...state.autoResponses.map(a => a.id)) + 1 : 0;
                 state.modules = data.m || CONSTANTS.DEFAULT_MODULES;
 
                 // Ensure default ARs exist
@@ -1848,12 +1896,10 @@ https://plrk.co/p/ea_redeem`,
                 const hasLast = state.autoResponses.some(ar => ar.text === "Это Last Message");
                 
                 if (!hasFirst) {
-                    const newId = state.autoResponses.length > 0 ? Math.max(...state.autoResponses.map(a => a.id)) + 1 : 0;
-                    state.autoResponses.unshift({ id: newId, text: "Это First Message" });
+                    state.autoResponses.unshift({ id: state.nextARId++, text: "Это First Message" });
                 }
                 if (!hasLast) {
-                    const newId = state.autoResponses.length > 0 ? Math.max(...state.autoResponses.map(a => a.id)) + 1 : 0;
-                    state.autoResponses.splice(1, 0, { id: newId, text: "Это Last Message" });
+                    state.autoResponses.splice(1, 0, { id: state.nextARId++, text: "Это Last Message" });
                 }
 
                 const firstId = state.autoResponses.find(ar => ar.text === "Это First Message")?.id;
@@ -1945,8 +1991,12 @@ https://plrk.co/p/ea_redeem`,
 
         const deleteItem = (index) => {
             state.items.splice(index, 1);
-            if (state.selectedIndex === index) state.selectedIndex = -1;
-            else if (state.selectedIndex > index) state.selectedIndex--;
+            if (state.selectedIndex === index) {
+                state.selectedIndex = -1;
+                cleanupEvents(); // Очищаем обработчики при удалении выбранного товара
+            } else if (state.selectedIndex > index) {
+                state.selectedIndex--;
+            }
             renderAll();
             showNotification("Товар удалён", "success");
         };
@@ -1964,6 +2014,12 @@ https://plrk.co/p/ea_redeem`,
             const firstId = state.autoResponses[0]?.id;
             const lastId = state.autoResponses[1]?.id ?? firstId;
             const moduleNames = Object.keys(state.modules);
+            
+            if (moduleNames.length === 0) {
+                showNotification("Нет доступных модулей", "error");
+                return;
+            }
+            
             const defaultModule = moduleNames.includes("ItemReupload") ? "ItemReupload" : moduleNames[0] || "Unknown";
             
             state.items.push([defaultModule, "Новый товар", [firstId, lastId], {}, 0, "default"]);
@@ -1999,6 +2055,12 @@ https://plrk.co/p/ea_redeem`,
 
             const item = state.items[state.selectedIndex];
             const moduleNames = Object.keys(state.modules);
+            
+            if (moduleNames.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Нет модулей</h3><p>Загрузите данные с модулями</p></div>`;
+                return;
+            }
+            
             const { name: moduleName, ars: moduleARs } = getModuleInfo(item);
             const [firstId] = item[2];
 
@@ -2026,7 +2088,7 @@ https://plrk.co/p/ea_redeem`,
                     <div class="section section-auto">
                         <div class="section-title"><i class="fas fa-cube"></i> Модуль</div>
                         <select class="form-input" id="item-module">
-                            ${moduleNames.map(key => `<option value="${key}" ${moduleName === key ? "selected" : ""}>${key}</option>`).join("")}
+                            ${moduleNames.map(key => `<option value="${key}" ${moduleName === key ? "selected" : ""}>${CONSTANTS.MODULE_NAMES[key] || key}</option>`).join("")}
                         </select>
                     </div>
                     <div class="section section-auto section-pad-top">
@@ -2069,33 +2131,54 @@ https://plrk.co/p/ea_redeem`,
                     </div>
                 </div>`;
 
+            // Cleanup previous event listeners before adding new ones
+            cleanupEvents();
+
             // Event listeners
-            document.getElementById("item-name").addEventListener("input", (e) => {
-                item[1] = e.target.value;
-                renderItemsList();
-            });
+            const itemNameInput = document.getElementById("item-name");
+            const itemModuleSelect = document.getElementById("item-module");
+            const autoBumpToggle = document.getElementById("auto-bump-toggle");
+            const autoBumpKeySelect = document.getElementById("auto-bump-key");
 
-            document.getElementById("item-module").addEventListener("change", (e) => {
-                item[0] = e.target.value;
-                renderItemSettings();
-            });
+            if (itemNameInput) {
+                addTrackedListener(itemNameInput, "input", (e) => {
+                    item[1] = e.target.value;
+                    renderItemsList();
+                });
+            }
 
-            document.getElementById("auto-bump-toggle").addEventListener("click", function() {
-                item[4] = item[4] ? 0 : 1;
-                renderItemSettings();
-                renderItemsList();
-            });
+            if (itemModuleSelect) {
+                addTrackedListener(itemModuleSelect, "change", (e) => {
+                    item[0] = e.target.value;
+                    cleanupEvents();
+                    renderItemSettings();
+                });
+            }
 
-            document.getElementById("auto-bump-key").addEventListener("change", (e) => {
-                item[5] = e.target.value;
-                renderItemSettings();
-            });
+            if (autoBumpToggle) {
+                addTrackedListener(autoBumpToggle, "click", function() {
+                    item[4] = item[4] ? 0 : 1;
+                    cleanupEvents();
+                    renderItemSettings();
+                    renderItemsList();
+                });
+            }
+
+            if (autoBumpKeySelect) {
+                addTrackedListener(autoBumpKeySelect, "change", (e) => {
+                    item[5] = e.target.value;
+                    cleanupEvents();
+                    renderItemSettings();
+                });
+            }
 
             // AR Select dropdowns
             container.querySelectorAll(".ar-select-wrapper").forEach(wrapper => {
                 const input = wrapper.querySelector("input");
                 const dropdown = wrapper.querySelector(".ar-select-dropdown");
                 const arIndex = parseInt(wrapper.dataset.arIndex);
+
+                if (!input || !dropdown) return;
 
                 const positionDropdown = () => {
                     const rect = input.getBoundingClientRect();
@@ -2114,38 +2197,63 @@ https://plrk.co/p/ea_redeem`,
                     });
                 };
 
-                input.addEventListener("focus", () => {
+                // Сохраняем оригинальное значение при фокусе
+                let originalValue = input.value;
+                
+                const handleInputFocus = () => {
+                    originalValue = input.value;
                     positionDropdown();
                     dropdown.style.display = "block";
                     filterOptions(input.value);
-                });
+                };
 
-                input.addEventListener("input", () => filterOptions(input.value));
+                const handleInput = () => filterOptions(input.value);
                 
-                input.addEventListener("keydown", (e) => {
+                const handleBlur = () => {
+                    // Проверяем, соответствует ли введенный текст какому-либо автоответу
+                    const matchingAR = state.autoResponses.find(ar => ar.text === input.value);
+                    if (!matchingAR) {
+                        // Если нет совпадения, возвращаем оригинальное значение
+                        input.value = originalValue;
+                    }
+                };
+                
+                const handleKeydown = (e) => {
                     if (e.key === "Escape") {
                         dropdown.style.display = "none";
+                        input.value = originalValue;
                         input.blur();
                     }
-                });
+                };
+
+                const handleDocumentClick = (e) => {
+                    if (!wrapper.contains(e.target)) {
+                        dropdown.style.display = "none";
+                        // При клике вне тоже проверяем валидность
+                        handleBlur();
+                    }
+                };
+
+                addTrackedListener(input, "focus", handleInputFocus);
+                addTrackedListener(input, "input", handleInput);
+                addTrackedListener(input, "blur", handleBlur);
+                addTrackedListener(input, "keydown", handleKeydown);
+                addTrackedListener(document, "click", handleDocumentClick);
+                addTrackedListener(window, "resize", positionDropdown);
 
                 dropdown.querySelectorAll(".ar-select-option").forEach(opt => {
-                    opt.addEventListener("click", () => {
+                    opt.addEventListener("mousedown", (e) => {
+                        e.preventDefault(); // Предотвращаем blur input
                         const arId = parseInt(opt.dataset.arId);
                         const ar = state.autoResponses.find(a => a.id === arId);
                         if (ar) {
                             input.value = ar.text;
+                            originalValue = ar.text; // Обновляем оригинальное значение
                             item[2][arIndex] = arId;
                             dropdown.style.display = "none";
                         }
                     });
                 });
-
-                document.addEventListener("click", (e) => {
-                    if (!wrapper.contains(e.target)) dropdown.style.display = "none";
-                });
-
-                window.addEventListener("resize", positionDropdown);
             });
         };
 
@@ -2191,7 +2299,10 @@ https://plrk.co/p/ea_redeem`,
                     });
                 });
 
-                document.getElementById("add-ar-btn").addEventListener("click", () => showARModal(false));
+                const addArBtn = document.getElementById("add-ar-btn");
+                if (addArBtn) {
+                    addArBtn.addEventListener("click", () => showARModal(false));
+                }
             });
         };
 
@@ -2296,7 +2407,10 @@ https://plrk.co/p/ea_redeem`,
                     });
                 });
 
-                document.getElementById("add-rc-btn").addEventListener("click", showRCModal);
+                const addRcBtn = document.getElementById("add-rc-btn");
+                if (addRcBtn) {
+                    addRcBtn.addEventListener("click", showRCModal);
+                }
             });
         };
 
@@ -2313,23 +2427,34 @@ https://plrk.co/p/ea_redeem`,
             });
 
             // Main actions
-            document.getElementById("export-btn").addEventListener("click", exportData);
-            document.getElementById("info-btn").addEventListener("click", showInfoModal);
-            document.getElementById("add-item-btn").addEventListener("click", addItem);
-            document.getElementById("bulk-edit-btn").addEventListener("click", showBulkModal);
-            
-            document.getElementById("confirm-delete").addEventListener("change", (e) => {
-                if (!e.target.checked && !confirm("Отключить подтверждение удаления?")) {
-                    e.target.checked = true;
-                } else {
-                    state.confirmDelete = e.target.checked;
-                }
-            });
+            const exportBtn = document.getElementById("export-btn");
+            const infoBtn = document.getElementById("info-btn");
+            const addItemBtn = document.getElementById("add-item-btn");
+            const bulkEditBtn = document.getElementById("bulk-edit-btn");
+            const confirmDeleteCheckbox = document.getElementById("confirm-delete");
+            const searchInput = document.getElementById("search-input");
 
-            document.getElementById("search-input").addEventListener("input", (e) => {
-                state.searchQuery = e.target.value.trim();
-                renderItemsList();
-            });
+            if (exportBtn) exportBtn.addEventListener("click", exportData);
+            if (infoBtn) infoBtn.addEventListener("click", showInfoModal);
+            if (addItemBtn) addItemBtn.addEventListener("click", addItem);
+            if (bulkEditBtn) bulkEditBtn.addEventListener("click", showBulkModal);
+            
+            if (confirmDeleteCheckbox) {
+                confirmDeleteCheckbox.addEventListener("change", (e) => {
+                    if (!e.target.checked && !confirm("Отключить подтверждение удаления?")) {
+                        e.target.checked = true;
+                    } else {
+                        state.confirmDelete = e.target.checked;
+                    }
+                });
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener("input", (e) => {
+                    state.searchQuery = e.target.value.trim();
+                    renderItemsList();
+                });
+            }
 
             // Mobile touch handling
             const app = document.querySelector('.app');
